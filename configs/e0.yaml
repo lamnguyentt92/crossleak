@@ -1,0 +1,52 @@
+# E0 pilot / killer experiment (frozen by prereg/E0_FREEZE.sha256)
+experiment: e0
+seed: 20261112
+horizon: 24
+context_length: 336
+probe_short_len: 24
+bootstrap: 1000
+
+models:
+  c2small: autogluon/chronos-2-small
+  c2base: amazon/chronos-2
+
+pools: {victim: 0.5, aux: 0.35, public: 0.15}
+
+datasets:
+  eld:
+    train_days: ["2013-01-15", "2013-12-20"]
+    test_days: ["2014-01-15", "2014-12-20"]
+    # origins whose label day or horizon contains a DST change day
+    exclude_days: ["2013-03-31", "2013-04-01", "2013-10-27", "2013-10-28", "2014-03-30", "2014-03-31", "2014-10-26", "2014-10-27"]
+    gain_k: [4, 16, 64]
+    channel_k: [2, 4, 16]
+    decode_k: [2, 4]
+  lifesnaps:
+    train_days: null
+    test_days: null
+    exclude_days: []
+    gain_k: [4, 8]        # at most 12 valid victims per day (k=16 infeasible)
+    channel_k: [2, 4, 8]
+    decode_k: [2, 4]
+
+gain:
+  scenarios: [mixed, allshort]
+  target_context: [24, 72, 168]
+  n_targets: 200
+
+channel:
+  probes: [honest, short, noise]
+  n_pairs: 200
+
+decode:
+  probes: [honest, short, noise]
+  n_train: 2000
+  n_test: 600
+
+invariance:
+  k: 4
+  n: 50
+
+speed:
+  k: [1, 4, 16, 64, 256]
+  repeats: 5

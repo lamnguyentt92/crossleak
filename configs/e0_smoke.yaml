@@ -1,0 +1,50 @@
+# Smoke test: same code paths as E0 with tiny sizes (a few minutes). Not used for any decision.
+experiment: e0_smoke
+seed: 7
+horizon: 24
+context_length: 336
+probe_short_len: 24
+bootstrap: 50
+
+models:
+  c2small: autogluon/chronos-2-small
+
+pools: {victim: 0.5, aux: 0.35, public: 0.15}
+
+datasets:
+  eld:
+    train_days: ["2013-01-15", "2013-12-20"]
+    test_days: ["2014-01-15", "2014-12-20"]
+    exclude_days: ["2013-03-31", "2013-04-01", "2013-10-27", "2013-10-28", "2014-03-30", "2014-03-31", "2014-10-26", "2014-10-27"]
+    gain_k: [4]
+    channel_k: [2]
+    decode_k: [2]
+  lifesnaps:
+    train_days: null
+    test_days: null
+    exclude_days: []
+    gain_k: [4]
+    channel_k: [2]
+    decode_k: [2]
+
+gain:
+  scenarios: [mixed, allshort]
+  target_context: [24]
+  n_targets: 20
+
+channel:
+  probes: [short]
+  n_pairs: 20
+
+decode:
+  probes: [short]
+  n_train: 120
+  n_test: 60
+
+invariance:
+  k: 4
+  n: 3
+
+speed:
+  k: [1, 16]
+  repeats: 2

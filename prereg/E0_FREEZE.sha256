@@ -1,0 +1,10 @@
+# E0 freeze, CrossLeak v0.1.0, 2026-11-12T14:24Z. Verify: grep -v '^#' prereg/E0_FREEZE.sha256 | sha256sum -c
+9ed64e31e82f8096430a164b3e85b3d1b759729225e47b3d7f19910e47b70390  prereg/E0_PREREG.md
+1322c662a2bffe9b37c8e1480e983b2ca9e315ae97656f0027f1310cb61a7170  configs/e0.yaml
+0ded469a08b93e5e497af300fc89b15821e4e102b45f3d6d7531e5aba04143df  src/crossleak/experiments/e0.py
+fef7997ed575c19d6e9c594d4cea4e2709d2ba1c69f156787e3ec00d0aebad8e  src/crossleak/analysis/e0_report.py
+aebbfe8aaecbac0e482317012e7b71a42a5915a35eb18a98e8db6d59d86a7c2a  src/crossleak/decode.py
+e4cdcdca3bbacfef7c76d453d7241ec3bdafcd705e0f19a405a26a426a4981b0  src/crossleak/metrics.py
+fc1cff0883f8c445f04c2d8d46b3a1cecfcbd9b45ac0d6b4fe7e937bd5315a7d  src/crossleak/data/panel.py
+04e173ce748aa6fda68c855f6632119fe304631ba486b254ae777f69ca16671e  src/crossleak/data/prepare.py
+caff5747dba2ec8f54b0473bdb751c440706de92bda4d5b403211731d53c7550  src/crossleak/model.py
