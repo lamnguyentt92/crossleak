@@ -4,7 +4,7 @@ title: "CrossLeak: co-tenant leakage of in-context cross-learning in time-series
 authors:
   - family-names: Nguyen
     given-names: Tran Thanh Lam
-version: 0.1.2
-date-released: 2026-11-12
+version: 0.2.0
+date-released: 2026-11-13
 license: MIT
 repository-code: "https://github.com/lamnguyentt92/crossleak"

@@ -24,6 +24,7 @@ import re
 import shlex
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 import zipfile
@@ -402,31 +403,25 @@ def experiment_of(config: str) -> str:
 
 
 def planned_per_shard(config: str, n: int) -> dict[int, int]:
-    from crossleak.experiments.e0 import assign_shards, build_cells
+    from crossleak.experiments.registry import planned_per_shard as pps
 
-    cfg = load_config(config)
-    cells = build_cells(cfg)
-    a = assign_shards(cells, cfg, n)
-    out = {s: 0 for s in range(n)}
-    for c in cells:
-        for s in a[c.cell_id]:
-            out[s] += 1
-    return out
+    return pps(load_config(config), n)
 
 
 def out_file(exp: str, shard: int) -> str:
     return f"$HOME/crossleak-v{VERSION}-{exp}-s{shard}.out"
 
 
-def launch(h: Host, config: str, n: int, budget: int | None) -> str:
+def launch(h: Host, config: str, n: int, budget: int | None, phase: str = "main") -> str:
     exp = experiment_of(config)
     d = shlex.quote(dir_of(h))
     env = f"CROSSLEAK_CONFIG={shlex.quote(config)}"
-    b = str(budget) if budget else ""
+    b = str(budget) if budget else '""'
+    outf = out_file(exp, h.shard) if phase == "main" else out_file(exp, h.shard).replace(".out", f"-{phase}.out")
     cmd = (
         f"cd {d} && mkdir -p runs/{exp} && "
         f'if [ -f runs/RUN.pid ] && kill -0 "$(cat runs/RUN.pid)" 2>/dev/null; then echo "ALREADY_RUNNING $(cat runs/RUN.pid)"; '
-        f"else rm -f runs/{exp}/RUN_EXIT.json; {env} setsid nohup bash scripts/run_e0.sh {h.shard} {n} {b} > {out_file(exp, h.shard)} 2>&1 < /dev/null & "
+        f"else rm -f runs/{exp}/RUN_EXIT.json; {env} setsid nohup bash scripts/run_campaign.sh {h.shard} {n} {b} {phase} > {outf} 2>&1 < /dev/null & "
         f'echo $! > runs/RUN.pid; echo "STARTED $!"; fi'
     )
     r = run(h, cmd, timeout=60)
@@ -442,7 +437,8 @@ def probe_status(h: Host, exp: str) -> dict:
         '[ -n "$pid" ] && kill -0 "$pid" 2>/dev/null && alive=1; '
         f"dn=$(ls runs/{exp}/*/DONE 2>/dev/null | wc -l); fl=$(ls runs/{exp}/*/FAILED 2>/dev/null | wc -l); "
         f"ex=$(cat runs/{exp}/RUN_EXIT.json 2>/dev/null | tr -d '\\n'); "
-        f"last=$(grep -hE 'cell done|FAILED|ERROR|budget|campaign finished' logs/crossleak_*_e0-run-* 2>/dev/null | tail -n 1 | cut -c1-150); "
+        "lf=$(ls -t logs/crossleak_*-run-shard* 2>/dev/null | head -n 1); "
+        "last=$([ -n \"$lf\" ] && grep -hE 'cell start|cell done|FAILED|ERROR|budget|campaign finished' \"$lf\" | tail -n 1 | cut -c1-150); "
         'echo "$alive|$dn|$fl|$ex|$last"'
     )
     r = run(h, cmd, timeout=60)
@@ -474,6 +470,18 @@ def cmd_status(config: str) -> int:
     table, _ = status_table(hosts, exp, planned_per_shard(config, len(hosts)))
     log.info("status %s %s at %s (UTC+7)\n%s", TAG, exp, f"{dt.datetime.now(VN):%a %d/%m %H:%M}", table)
     return 0
+
+
+def cmd_watch(smoke: bool, interval: int | None, once: bool) -> int:
+    """Live dashboard (read-only): scripts/watch.py with this version."""
+    args = [sys.executable, str(repo_root() / "scripts" / "watch.py"), "--version", VERSION]
+    if smoke:
+        args.append("--smoke")
+    if interval:
+        args += ["--interval", str(interval)]
+    if once:
+        args.append("--once")
+    return subprocess.call(args)
 
 
 def cmd_stop(config: str) -> int:
@@ -532,18 +540,18 @@ def stdout_file() -> Path | None:
 
 
 def fetch_outs(hosts: list[Host], exp: str, dest: Path) -> list[Path]:
-    """Best effort: each remote machine's run_e0.sh console output ($HOME/crossleak-v<version>-<exp>-s<i>.out)."""
+    """Best effort: each remote machine's run_campaign.sh console output ($HOME/crossleak-v<version>-<exp>-s<i>[-cost].out)."""
     got = []
     for h in hosts:
         if h.local and not fake_root():
             continue
-        try:
-            name = f"crossleak-v{VERSION}-{exp}-s{h.shard}.out"
-            r = run(h, f"test -f {name} && echo yes || echo no", timeout=30)
-            if r.stdout.strip().endswith("yes"):
-                got.append(get(h, name, dest / f"{h.name}_{name}", timeout=120))
-        except Exception as exc:  # noqa: BLE001
-            log.warning("could not fetch console output of %s: %s", h.name, exc)
+        for name in (f"crossleak-v{VERSION}-{exp}-s{h.shard}.out", f"crossleak-v{VERSION}-{exp}-s{h.shard}-cost.out"):
+            try:
+                r = run(h, f"test -f {name} && echo yes || echo no", timeout=30)
+                if r.stdout.strip().endswith("yes"):
+                    got.append(get(h, name, dest / f"{h.name}_{name}", timeout=120))
+            except Exception as exc:  # noqa: BLE001
+                log.warning("could not fetch console output %s of %s: %s", name, h.name, exc)
     return got
 
 
@@ -567,8 +575,7 @@ def controller_extras(exp: str, out_file_path: Path | None) -> list[tuple[Path, 
 def make_bundle(zips: list[Path], tag: str, config: str, result: dict, extras: list[tuple[Path, str]], texts: dict[str, str] | None = None) -> Path:
     """ONE zip with: every machine's artifact, a merged report, controller logs and console output, remote console
     output, controller state and RESULT.json. Name: crossleak_<version>_<datetime>_all-<tag>[-error].zip"""
-    from crossleak.analysis.e0_report import build_report
-    from crossleak.experiments.e0 import build_cells
+    from crossleak.experiments.registry import merged_report
 
     exp = experiment_of(config)
     stamp = time.strftime("%Y%m%d-%H%M%S")
@@ -590,18 +597,13 @@ def make_bundle(zips: list[Path], tag: str, config: str, result: dict, extras: l
                 roots.append(top / "runs" / exp)
         report = None
         if roots:
-            old = os.environ.get("CROSSLEAK_REPORTS")
-            os.environ["CROSSLEAK_REPORTS"] = str(tmp / "merged")
             try:
-                report = build_report(roots, exp, len({c.cell_id for c in build_cells(load_config(config))}))
-                result["merged_verdict"] = json.loads((tmp / "merged" / exp / "e0_summary.json").read_text())["verdicts"]["overall"]
+                jobs = max(1, min(4, os.cpu_count() or 1))
+                t0 = time.time()
+                report, result["merged_verdict"] = merged_report(roots, load_config(config), tmp / "merged" / exp, decoders=os.environ.get("CROSSLEAK_BUNDLE_DECODERS", "linear"), n_jobs=jobs)
+                log.info("merged report in %.1f min", (time.time() - t0) / 60)
             except Exception as exc:  # noqa: BLE001
                 log.exception("merged report failed: %s", exc)
-            finally:
-                if old is None:
-                    os.environ.pop("CROSSLEAK_REPORTS", None)
-                else:
-                    os.environ["CROSSLEAK_REPORTS"] = old
         result["artifacts"] = []
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as zf:
             for z in zips:
@@ -728,9 +730,32 @@ def cmd_run(config: str, until: str | None, poll: int, skip_setup: bool, logfile
                 break
         exits = {h.name: (res[h.role]["exit"] or {}).get("rc") if not isinstance(res[h.role], Exception) else "unreachable" for h in hosts}
         result["shard_exit_codes"] = exits
+        log.info("main phase finished; shard exit codes: %s", exits)
+        from crossleak.experiments.registry import has_cost_phase
+
+        if has_cost_phase(load_config(config)):
+            if deadline and time.time() > deadline:
+                log.warning("deadline passed: cost phase skipped")
+                result["cost_phase"] = "skipped (deadline)"
+            else:
+                result["stage"] = "cost"
+                h0 = next(h for h in hosts if h.shard == 0)
+                log.info("cost phase on %s alone (the other machines are idle now)", h0.name)
+                result["cost_launch"] = launch(h0, config, n, None, phase="cost")
+                t1 = time.time()
+                while True:
+                    time.sleep(min(poll, 60))
+                    s0 = probe_status(h0, exp)
+                    if not s0["alive"]:
+                        break
+                    if time.time() - t1 > 3 * 3600:
+                        log.warning("cost phase still running after 3 h; collecting what exists")
+                        break
+                result["cost_phase_exit"] = (s0.get("exit") or {}).get("rc")
+                log.info("cost phase finished (exit %s) in %.1f min", result["cost_phase_exit"], (time.time() - t1) / 60)
         result["stage"] = "done"
-        result["status"] = "ok" if all(v == 0 for v in exits.values()) else "shard_errors"
-        log.info("cluster run finished; shard exit codes: %s", exits)
+        result["status"] = "ok" if all(v == 0 for v in exits.values()) and result.get("cost_phase_exit", 0) in (0, None) else "shard_errors"
+        log.info("cluster run finished: %s", result["status"])
     except SystemExit as exc:
         result["error"] = str(exc.code)
         log.error("cluster run stopped at stage %s: %s", result["stage"], exc.code)

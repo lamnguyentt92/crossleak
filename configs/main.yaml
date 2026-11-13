@@ -1,0 +1,75 @@
+# Main study (CrossLeak v0.2). Frozen by prereg/MAIN_FREEZE.sha256 together with prereg/MAIN_PREREG.md.
+experiment: main
+driver: main
+seed: 20261114          # new seed: no sample of the main study repeats an E0 sample
+pool_seed: 20261112     # same user pools as E0 (victim / aux / public)
+horizon: 24
+context_length: 336
+probe_short_len: 24
+bootstrap: 1000
+delta: 1.0e-5
+part_budget_sec: 1500   # large cells are split into parts of at most ~25 min on a busy testbed machine
+cost_per_series:        # seconds per forecast series on one machine while all five are busy (measured in E0; planning only)
+  c2small: 0.03
+  c2base: 0.15
+
+models:
+  c2small: autogluon/chronos-2-small
+  c2base: amazon/chronos-2
+
+pools: {victim: 0.5, aux: 0.35, public: 0.15}
+
+datasets:
+  eld:
+    train_days: ["2013-01-15", "2013-12-20"]
+    test_days: ["2014-01-15", "2014-12-20"]
+    exclude_days: ["2013-03-31", "2013-04-01", "2013-10-27", "2013-10-28", "2014-03-30", "2014-03-31", "2014-10-26", "2014-10-27"]
+    target_frac: 0.3     # share of the victim pool that plays cold-start users in the utility cells
+  lifesnaps:
+    train_days: null
+    test_days: null
+    exclude_days: []
+    target_frac: 0.5
+
+d4:
+  representation: dayfold    # chosen by the design pilot on ELD 2013 (docs/pilots/D4_DESIGN.md)
+  P: [4, 8]
+  P_primary: 8               # chosen by the design pilot (best gain at eps = 4)
+  eps: [0.5, 1, 2, 4, 8, .inf]
+  sum_share: 0.9
+  centre_days: 40
+
+d1:
+  min_gap_days: 56
+
+utility:
+  - {dataset: eld, models: [c2base, c2small], ell: 24, n_targets: 300, xl_k: [4, 16, 64], d1_k: [4, 16], d4: true}
+  - {dataset: eld, models: [c2base, c2small], ell: 72, n_targets: 300, xl_k: [4, 16], d1_k: [], d4: false}
+  - {dataset: lifesnaps, models: [c2base, c2small], ell: 24, n_targets: 300, xl_k: [4, 8], d1_k: [4], d4: true}
+  - {dataset: lifesnaps, models: [c2base, c2small], ell: 72, n_targets: 300, xl_k: [4, 8], d1_k: [], d4: false}
+xl_ref: {eld: 16, lifesnaps: 8}   # cross-learning reference for "retained gain" of D1 and D4
+
+attack:
+  sizes: {2: [2000, 600], 4: [1500, 600], 16: [1500, 600], 64: [1000, 500], 256: [800, 400]}   # [n_train, n_test]
+  families:
+    - {fam: single, datasets: [eld, lifesnaps], models: [c2base, c2small], k: [2], probes: [short, noise, honest]}
+    - {fam: single, datasets: [eld, lifesnaps], models: [c2base, c2small], k: [4], probes: [short]}
+    - {fam: single, datasets: [eld], models: [c2base, c2small], k: [16], probes: [short]}
+    - {fam: sybil, filler: copy, datasets: [eld, lifesnaps], models: [c2small], k: [4, 16, 64, 256], probes: [short]}
+    - {fam: sybil, filler: copy, datasets: [eld, lifesnaps], models: [c2base], k: [4, 16], probes: [short]}
+    - {fam: sybil, filler: sparse, datasets: [eld], models: [c2small], k: [16, 256], probes: [short]}
+    - {fam: sybil, filler: noise, datasets: [eld], models: [c2small], k: [16, 64], probes: [short]}
+    - {fam: half, filler: copy, datasets: [eld], models: [c2small], k: [16, 64], probes: [short]}
+
+channel:
+  n_pairs: {2: 200, 4: 200, 8: 200, 16: 200, 64: 60, 256: 40}
+  families:
+    - {fam: single, datasets: [eld], models: [c2base, c2small], k: [2, 4, 16, 64, 256], probes: [short]}
+    - {fam: single, datasets: [lifesnaps], models: [c2base, c2small], k: [2, 4, 8], probes: [short]}
+    - {fam: sybil, filler: copy, datasets: [eld, lifesnaps], models: [c2base, c2small], k: [4, 16, 64, 256], probes: [short]}
+
+invariance: {k: 4, n: 50, models: [c2base, c2small], datasets: [eld, lifesnaps]}
+
+dpaudit: {n_train: 3000, n_test: 2000}
+
+cost: {models: [c2small, c2base], xl_k: [4, 16, 64, 256], d4_P: [4, 8], batch_users: 64, repeats: 20, threads: 4}

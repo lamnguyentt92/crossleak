@@ -1,4 +1,4 @@
-# Design (v0.1.0 scope: E0)
+# Design (E0 in v0.1.x; main study in v0.2.0, section 11)
 
 ## 1. System model
 An edge forecasting service runs Chronos-2 for N users (households' meters, wearable users). For a cold-start user it
@@ -61,3 +61,32 @@ writes `RELEASE_COMMIT` there, runs `setup_vm.sh` on every machine, copies the v
 fetches each artifact and writes one bundle with a report merged over all shards. Remote commands touch only
 `~/crossleak-v<version>`, `~/crossleak-data`, `~/crossleak-artifacts`; `stop` signals only the recorded process group.
 `CROSSLEAK_CLUSTER_FAKE=<dir>` simulates the five machines as directories for testing.
+
+## 11. Main study (v0.2.0)
+Plan and rules: `prereg/MAIN_PREREG.md`. New modules; E0's frozen files are untouched.
+
+| Module | Role |
+|---|---|
+| `experiments/main.py` | Cells `ref`, `util`, `attack`, `channel`, `invariance`, `dpaudit`, `cost`; parts; LPT shards; cost phase on shard 0 |
+| `defenses/dp_prototype.py` | D4: representation, clipping, public centres, noisy sums/counts, zCDP accounting, AUC ceiling |
+| `attack.py` | Labels L1–L5, linear and nonlinear decoders, within-day anomaly correlation, A1 linkage |
+| `analysis/main_report.py` | Merge parts, bootstrap, decoders (parallel), pre-registered verdicts, MAIN_REPORT.md, CSVs |
+| `experiments/registry.py` | Chooses the E0 or main driver from the config (`driver:`), for the CLI, controller and dashboard |
+| `scripts/run_campaign.sh` | One machine: data → campaign (phase main or cost) → local report → artifact |
+
+Data roles per dataset: victim pool = attack victims (test); a fixed 30 % (ELD) / 50 % (LifeSnaps) of it = cold-start
+targets of the utility cells; the rest of the victim pool + the aux pool = established service users (XL co-tenants,
+D4 contributors); aux pool = attacker's own users (probe sources, simulated victims for decoder training); public pool =
+D1 windows and D4 centres. Day references (population mean profile, median evening level, median self-residual) and
+old weekday profiles for A1 come from one `ref` cell per dataset.
+
+Group composition of an attack sample: [probe, victim, m − 1 fillers, k − 1 − m honest others]; the attacker reads row 0.
+Utility sample: one cold-start target (history ℓ) with, on the same day, nested co-tenant sets (XL), public windows of the
+same weekday ≥ 56 days away (D1), or the day's DP release (D4; one release per day and (P, ε), seeded per day, shared by
+all cells and both models).
+
+Load balancing: every cell has an estimated cost (series × seconds per series measured in E0 under contention; 0.03 s
+small, 0.15 s base); cells above 25 min are split into parts with their own seeds; parts are assigned by LPT; inside a
+shard cells run by priority (references, utility ℓ = 24, pairs, sybils, channel, rest). Estimated 34 machine-hours,
+6.8 h per machine. After the five shards finish, the controller runs the cost cells on VM-A alone, then collects and
+writes one zip whose merged report fits the linear decoders (4 processes).

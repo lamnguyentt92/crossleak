@@ -109,8 +109,17 @@ def fetch(name: str, retries: int = 3) -> dict:
 
 
 def _write_manifest(name: str, info: dict) -> None:
+    """Update raw/MANIFEST.json atomically (temp file + rename); an unreadable manifest is rebuilt."""
+    import os
+
     path = data_dir() / "raw" / "MANIFEST.json"
-    manifest = json.loads(path.read_text()) if path.exists() else {}
+    try:
+        manifest = json.loads(path.read_text()) if path.exists() else {}
+    except (ValueError, OSError):
+        log.warning("%s unreadable; rebuilding it", path)
+        manifest = {}
     src = SOURCES[name]
     manifest[name] = {**info, "licence": src["licence"], "citation": src["citation"]}
-    path.write_text(json.dumps(manifest, indent=2))
+    tmp = path.with_name(f".MANIFEST.{os.getpid()}.tmp")
+    tmp.write_text(json.dumps(manifest, indent=2))
+    os.replace(tmp, path)

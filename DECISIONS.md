@@ -18,6 +18,40 @@ Format: ID — date — decision — reason.
 - **D-013** — 2026-11-12 — Releases are published as branches `release/vX.Y.Z`.
 - **D-014** — 2026-11-13 — v0.1.2: (a) the controller's "uncommitted changes" check ignores file-mode changes (on the controller every non-script file had its exec bit set, content unchanged, which blocked the run); (b) `cluster run` always writes ONE zip, on success or on failure at any stage (machine artifacts, merged report, controller logs and console output, remote console output, git/environment state, RESULT.json); local setup failures also produce a zip. E0 frozen files unchanged. — Every run, successful or not, must leave one complete record.
 - **D-015** — 2026-11-13 — v0.1.3 adds a read-only live dashboard; the E0 run already started with v0.1.2 continues unchanged. Known limitation: CPU cost in E0 is measured while all five VMs share one physical i9-12900H (≈57 ms/series for the small model vs ≈6 ms on an unloaded machine), so it is descriptive only; the edge-cost experiment of the main plan (E7) must run with a single active VM.
+- **D-016** — 2026-11-13 — Main-study plan approved: CL1 scoped to one day of history; per-k thresholds; sybil attacker
+  (m = k − 1 and k/2) and a nonlinear decoder; A1 linkage; defences D0, D1, D2, D4 and the history rule; E7 cost on one
+  idle VM; decoders fitted in the analysis stage; LifeSnaps kept as the second dataset. — E0 = GO (docs/E0_PILOT_RESULTS.md).
+- **D-017** — 2026-11-13 — Sybil filler designs from a synthetic mechanism check (before any main data): fillers
+  are never inert; all-NaN / one-reading fillers keep or amplify the victim's influence up to k = 256 (1.0–2.1 × k = 2),
+  copies of the probe keep 0.4–1.2 ×, noise probes dilute it (base: 0.41 → 0.02). Primary filler `copy` (series that look
+  like ordinary new users; no acceptance assumption); `sparse` = strongest (assumes one-reading series are accepted);
+  `noise` = natural dilution. — Decisive check of whether large groups can be defeated by an attacker.
+- **D-018** — 2026-11-13 — D4 representation `dayfold` (24-h profile, clip √24) and primary P = 8, chosen by the design
+  pilot on ELD 2013 with a rule fixed before running (largest gain at ε = 4, c2base): dayfold P = 8 retained 1.10 / 1.01 of
+  the cross-learning gain at ε = 4 / 1 (docs/pilots/D4_DESIGN.md). The small model gained nothing from co-tenants there.
+- **D-019** — 2026-11-13 — Primary A2 label L1 is *within-day* (above the day's population median) and the profile metric
+  R1 subtracts the day's population mean, so population-wide information (holidays, weather) cannot count as individual
+  leakage. Thresholds from the E0 re-analysis with these definitions (docs/pilots/e0_recalibration.json): CL3 AUC ≥ 0.65,
+  CL4 Δr1 ≥ 0.10, CL9 top-1 ≥ 0.15. Labels L4 (self-relative evening) and L5 (idiosyncratic: self- and population-relative)
+  added as estimands after the smoke DP audit showed that a user's 14-day mean profile alone predicts L1 (AUC 0.94):
+  L1 mostly reflects a stable routine, L4/L5 isolate day-level events. — Before any main data.
+- **D-020** — 2026-11-13 — Cost-driven scope: decoders for k ≥ 64 only on c2small (k = 256 sybil-copy and sparse);
+  c2base decoders up to k = 16 and channel up to k = 256; single-member probes at k = 4 short only; n_train 1,500 for
+  k = 4/16, 1,000 for 64, 800 for 256. Estimated 34 machine-hours (6.8 h per VM). — Fits one overnight run.
+- **D-021** — 2026-11-13 — CL8 restated before any data as an absolute feasibility criterion (1,000 users per day
+  within 15 min, base model, P = 8). D4 forecasts each user with its own P + 1 series, so a "< 10 % overhead per series
+  over cross-learning" criterion cannot hold by construction.
+- **D-022** — 2026-11-13 — Utility targets from a fixed cold-start subset of the victim pool (30 % ELD, 50 % LifeSnaps);
+  established service users = rest of the victim pool + aux pool; D1 uses public users' windows of the same weekday at
+  least 56 days away (a public dataset is not collected on the same dates; LifeSnaps has ~1 public user a day). PMData
+  not used (D-004 deferred it; LifeSnaps' own public pool suffices for this design).
+- **D-023** — 2026-11-13 — v0.2.0 runs the main plan on the same five VMs with `cluster.sh run` (default config now
+  `configs/main.yaml`); the cost phase runs on VM-A after the other shards finish; E0 frozen files unchanged and E0 still
+  runnable with `--config configs/e0.yaml`.
+- **D-024** — 2026-11-13 — Before the freeze: the attacker's training labels L1/L5 use day references computed only
+  over users it can access (aux and public pools); test labels use all users. Without this, LifeSnaps training labels
+  (no time split) would depend on victim-pool data of the same days. The report also refuses to mix results produced
+  under another configuration (CONFIG_MISMATCH). Main plan frozen at 2026-11-13T16:59Z (`prereg/MAIN_FREEZE.sha256`).
 
 ## Deviations log
 None so far.

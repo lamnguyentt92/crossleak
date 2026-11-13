@@ -77,10 +77,67 @@ def _cmd_e0(a) -> int:
     return 1
 
 
+def _cmd_main(a) -> int:
+    from crossleak.experiments.main import build_cells, cell_status, run_campaign, shard_cells
+
+    cfg = load_config(a.config)
+    if a.action == "plan":
+        cells = build_cells(cfg)
+        print(f"{TAG} {cfg['experiment']}: {len(cells)} cells, estimated {sum(c.cost(cfg) for c in cells if c.exp != 'cost') / 3600:.1f} machine-hours (main phase)")
+        for s in range(a.nshards):
+            for phase in ("main", "cost"):
+                cs = shard_cells(cfg, s, a.nshards, phase)
+                if cs:
+                    print(f"shard {s} {phase:4}: {len(cs):3} cells, {sum(c.cost(cfg) for c in cs) / 3600:5.2f} h")
+        return 0
+    if a.action == "run":
+        only = a.only.split(",") if a.only else None
+        counts = run_campaign(cfg, a.shard, a.nshards, a.budget_min, only, a.phase)
+        return 0 if counts["failed"] == 0 else 2
+    if a.action == "status":
+        mine = shard_cells(cfg, a.shard, a.nshards, a.phase)
+        st = {"done": 0, "failed": 0, "todo": 0}
+        for c in mine:
+            st[cell_status(cfg, c)] += 1
+        print(f"{TAG} {cfg['experiment']} {a.phase} shard {a.shard}/{a.nshards}: {st} of {len(mine)} cells")
+        for c in mine:
+            if cell_status(cfg, c) == "failed":
+                info = json.loads((runs_dir() / cfg["experiment"] / c.cell_id / "FAILED").read_text())
+                print(f"  FAILED {c.cell_id}: {info.get('error')}")
+        return 0
+    if a.action == "report":
+        import tempfile
+        import zipfile
+        from pathlib import Path
+
+        from crossleak.analysis.main_report import build_report
+
+        roots = [Path(r) for r in a.roots] if a.roots else [runs_dir() / cfg["experiment"]]
+        tmp = None
+        if a.from_zip:
+            tmp = tempfile.mkdtemp(prefix="crossleak-report-")
+            roots = []
+            for z in a.from_zip:
+                with zipfile.ZipFile(z) as zf:
+                    inner = [m for m in zf.namelist() if m.endswith(".zip") and "/machines/" in m]
+                    zf.extractall(tmp)
+                for m in inner:
+                    with zipfile.ZipFile(Path(tmp) / m) as zf2:
+                        zf2.extractall(Path(tmp) / "machines_x")
+            base = Path(tmp)
+            roots = sorted({p.parent.parent for p in base.rglob(f"runs/{cfg['experiment']}/*/result.json")})
+            log.info("report from %d run directories unpacked in %s", len(roots), tmp)
+        out = Path(a.out) if a.out else None
+        path = build_report(roots, cfg, decoders=a.decoders, n_jobs=a.jobs, out_dir=out)
+        print(path.read_text())
+        return 0
+    return 1
+
+
 def _cmd_cluster(a) -> int:
     from crossleak import cluster as C
 
-    config = "configs/e0_smoke.yaml" if a.smoke else a.config
+    config = a.config.replace(".yaml", "_smoke.yaml") if a.smoke and not a.config.endswith("_smoke.yaml") else a.config
     if a.action == "init":
         vm = {r: getattr(a, f"vm_{r}") for r in "abcde"}
         return C.cmd_init(vm if any(vm.values()) else None, a.ssh_user, a.evicon)
@@ -95,6 +152,8 @@ def _cmd_cluster(a) -> int:
         return C.cmd_run(config, a.until, poll, a.skip_setup, getattr(a, "_logfile", None))
     if a.action == "status":
         return C.cmd_status(config)
+    if a.action == "watch":
+        return C.cmd_watch(a.smoke, a.poll, a.once)
     if a.action == "stop":
         return C.cmd_stop(config)
     if a.action == "collect":
@@ -140,14 +199,30 @@ def main(argv: list[str] | None = None) -> int:
     e.add_argument("--roots", nargs="*", help="report: run directories to merge (default: this machine)")
     e.set_defaults(fn=_cmd_e0)
 
+    mn = sub.add_parser("main", help="main study (v0.2)")
+    mn.add_argument("action", choices=["plan", "run", "status", "report"])
+    mn.add_argument("--config", default="configs/main.yaml")
+    mn.add_argument("--shard", type=int, default=0)
+    mn.add_argument("--nshards", type=int, default=1)
+    mn.add_argument("--phase", default="main", choices=["main", "cost"], help="cost: edge-cost cells, run on one idle machine")
+    mn.add_argument("--budget-min", type=float, default=None, help="stop starting new cells after this many minutes")
+    mn.add_argument("--only", default=None, help="comma-separated cell kinds, e.g. util,attack")
+    mn.add_argument("--roots", nargs="*", help="report: run directories to merge (default: this machine)")
+    mn.add_argument("--from-zip", nargs="*", help="report: bundle zip(s) to unpack and merge")
+    mn.add_argument("--decoders", default="linear", choices=["none", "linear", "full"], help="report: attacker decoders to fit")
+    mn.add_argument("--jobs", type=int, default=1, help="report: parallel decoder fits")
+    mn.add_argument("--out", default=None, help="report: output directory (default reports/<experiment>)")
+    mn.set_defaults(fn=_cmd_main)
+
     ar = sub.add_parser("artifact", help="bundle results for analysis into one zip")
     ar.add_argument("--suffix", default=None)
     ar.set_defaults(fn=_cmd_artifact)
 
     c = sub.add_parser("cluster", help="run on all testbed machines from this one (controller)")
-    c.add_argument("action", choices=["init", "check", "setup", "data", "run", "all", "status", "stop", "collect", "bundle"])
-    c.add_argument("--config", default="configs/e0.yaml")
-    c.add_argument("--smoke", action="store_true", help="use configs/e0_smoke.yaml")
+    c.add_argument("action", choices=["init", "check", "setup", "data", "run", "all", "status", "watch", "stop", "collect", "bundle"])
+    c.add_argument("--once", action="store_true", help="watch: print once")
+    c.add_argument("--config", default="configs/main.yaml", help="campaign config (E0: configs/e0.yaml)")
+    c.add_argument("--smoke", action="store_true", help="use the config's _smoke variant (configs/main_smoke.yaml)")
     c.add_argument("--until", default=None, help="HH:MM Vietnam time: shards stop starting new cells about 15 min before")
     c.add_argument("--poll", type=int, default=None, help="seconds between progress checks (default 120, smoke 30)")
     c.add_argument("--skip-setup", action="store_true")
@@ -162,11 +237,13 @@ def main(argv: list[str] | None = None) -> int:
     a = p.parse_args(argv)
     from crossleak.logutil import setup_logging
 
-    name = a.cmd if a.cmd not in ("e0", "cluster") else f"{a.cmd}-{a.action}"
-    if a.cmd == "e0" and a.action == "run":
-        name += f"-shard{a.shard}of{a.nshards}"
+    name = a.cmd if a.cmd not in ("e0", "main", "cluster") else f"{a.cmd}-{a.action}"
+    if a.cmd in ("e0", "main") and a.action == "run":
+        name += f"-shard{a.shard}of{a.nshards}" + (f"-{a.phase}" if a.cmd == "main" and a.phase != "main" else "")
     if a.cmd == "cluster" and a.smoke:
         name += "-smoke"
+    if a.cmd == "cluster" and a.action == "watch":  # read-only dashboard: no log file
+        return int(a.fn(a))
     a._logfile = setup_logging(name)
     log.info("command: %s", " ".join(sys.argv))
     try:
