@@ -78,9 +78,12 @@ def _cmd_e0(a) -> int:
 
 
 def _cmd_main(a) -> int:
-    from crossleak.experiments.main import build_cells, cell_status, run_campaign, shard_cells
+    from crossleak.experiments.registry import install_driver
 
     cfg = load_config(a.config)
+    install_driver(cfg)  # before the import below, so that patched names are bound
+    from crossleak.experiments.main import build_cells, cell_status, run_campaign, shard_cells
+
     if a.action == "plan":
         cells = build_cells(cfg)
         print(f"{TAG} {cfg['experiment']}: {len(cells)} cells, estimated {sum(c.cost(cfg) for c in cells if c.exp != 'cost') / 3600:.1f} machine-hours (main phase)")
@@ -112,6 +115,8 @@ def _cmd_main(a) -> int:
 
         if cfg.get("driver") == "v3":
             from crossleak.analysis.v3_report import build_report
+        elif cfg.get("driver") == "v4":
+            from crossleak.analysis.v4_report import build_report
         else:
             from crossleak.analysis.main_report import build_report
 

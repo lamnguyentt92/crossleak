@@ -1,0 +1,17 @@
+CrossLeak experiment data
+Copyright (c) 2026 Tran Thanh Lam Nguyen
+
+The experiment outputs, reports and logs in this deposit (the result bundles, README_DATA.md, DEPOSIT_MANIFEST.json,
+SHA256SUMS and zenodo_metadata.json) are licensed under the Creative Commons Attribution 4.0 International licence
+(CC BY 4.0): https://creativecommons.org/licenses/by/4.0/ (legal code:
+https://creativecommons.org/licenses/by/4.0/legalcode).
+
+You may share and adapt the material for any purpose, provided you give appropriate credit, provide a link to the
+licence, and indicate if changes were made.
+
+Third-party material. Parts of the result bundles are derived from:
+  - ElectricityLoadDiagrams20112014, A. Trindade, UCI Machine Learning Repository, doi:10.24432/C58C86, CC BY 4.0;
+  - LifeSnaps (version 4), S. Yfantidou et al., Zenodo, doi:10.5281/zenodo.7229547, CC BY 4.0.
+Credit for that material belongs to its creators; the changes made are described in README_DATA.md.
+
+The code archives (crossleak-code-*.zip) are licensed under the MIT licence (LICENSE-CODE.txt).

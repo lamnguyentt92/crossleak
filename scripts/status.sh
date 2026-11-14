@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 . .venv/bin/activate
 CONFIG="${CROSSLEAK_CONFIG:-configs/main.yaml}"
 DRIVER="$(python -c "import sys, yaml; print(yaml.safe_load(open(sys.argv[1])).get('driver', 'e0'))" "${CONFIG}")"
-if [ "${DRIVER}" = "main" ] || [ "${DRIVER}" = "v3" ]; then
+if [ "${DRIVER}" = "main" ] || [ "${DRIVER}" = "v3" ] || [ "${DRIVER}" = "v4" ]; then
   crossleak main status --config "${CONFIG}" --shard "${1:-0}" --nshards "${2:-1}" --phase "${3:-main}" 2>/dev/null | grep -v " INFO "
 else
   crossleak e0 status --config "${CONFIG}" --shard "${1:-0}" --nshards "${2:-1}" 2>/dev/null | grep -v " INFO "

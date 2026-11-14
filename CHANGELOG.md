@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.4.0
+Causal-defence study: D1 public windows and LifeSnaps D4 centres restricted to data from before the forecast origin, next to the original configurations on the same targets; the frozen main driver is patched at run time only; plan frozen by `prereg/V4_FREEZE.sha256`. Known issue: `scripts/watch.sh` without `--config` stops with a NameError (dashboard only; fixed in v1.0.0).
+
 ## v0.3.0
 Confirmatory study: equivalence of D1 and D4 to cross-learning (TOST), stronger sybil attacker (residual features, larger training sets), real-system check through AutoGluon (`scripts/agcheck*`); the frozen main driver and analysis are reused unchanged; plan frozen by `prereg/V3_FREEZE.sha256`.
 

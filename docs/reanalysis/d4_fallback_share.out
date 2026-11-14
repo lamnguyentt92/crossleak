@@ -1,0 +1,4 @@
+eld       eps=1: days 283, service users per release (median) 229, prototypes on the public-centre fallback 15.6%
+eld       eps=4: days 283, service users per release (median) 229, prototypes on the public-centre fallback 10.2%
+lifesnaps eps=1: days 100, service users per release (median) 9, prototypes on the public-centre fallback 51.2%
+lifesnaps eps=4: days 100, service users per release (median) 9, prototypes on the public-centre fallback 46.4%

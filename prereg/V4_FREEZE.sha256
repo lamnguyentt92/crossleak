@@ -1,0 +1,16 @@
+# v0.4 causal-defence freeze, CrossLeak v0.4.0, 2026-11-14T14:08Z, before any v0.4 data.
+# New v0.4 files:
+f13807d01338a79861b3d221ff7583ace7eda2522d1b70d08f391e3559749c2f  prereg/V4_PREREG.md
+747cbfabf4bdbb5dbaf1533b38fcf7cd36975bcac4e101542d5e1cc2a34591df  configs/v4.yaml
+fbe8262ed9b66e54d0f57ebbf7c273a5cf33da07917ecb25805bd64c37e5064a  src/crossleak/experiments/v4.py
+d0acba3e3c4d699b7c20188f827c1106fed261a6a9a49d6c1df82923c6e7022e  src/crossleak/analysis/v4_report.py
+c1e761bc8ced653b11e64db4a44803ca44e06ca74ac974cadf879c5ffb70ea4c  src/crossleak/experiments/registry.py
+# Reused, unchanged since their own freezes:
+e3009fe6498ee901b357ecfeb072a3af47cb2644a8642b7a7d15618250d72f67  src/crossleak/experiments/main.py
+0954eeaa1a56cacb7996528e1869ac9a223f64362f9f323cbea2f80d1dac6dc4  src/crossleak/analysis/main_report.py
+7cd5f19389c2bb1b9cfb405cf0a7fbb59e14c5a54a15537ec3463fecf63f5470  src/crossleak/analysis/v3_report.py
+c369ec76d4723d185e256d524f9a2b8cd970d744da58837dc99b6c48672d86b0  src/crossleak/defenses/dp_prototype.py
+e4cdcdca3bbacfef7c76d453d7241ec3bdafcd705e0f19a405a26a426a4981b0  src/crossleak/metrics.py
+caff5747dba2ec8f54b0473bdb751c440706de92bda4d5b403211731d53c7550  src/crossleak/model.py
+fc1cff0883f8c445f04c2d8d46b3a1cecfcbd9b45ac0d6b4fe7e937bd5315a7d  src/crossleak/data/panel.py
+04e173ce748aa6fda68c855f6632119fe304631ba486b254ae777f69ca16671e  src/crossleak/data/prepare.py

@@ -125,7 +125,7 @@ def costs(config: str) -> tuple[dict[str, tuple[str, str, float]], float]:
     try:
         from crossleak.experiments.registry import cell_costs, driver_name
 
-        return cell_costs(cfg), (1.0 if driver_name(cfg) == "main" else SEC_PER_UNIT_DEFAULT)
+        return cell_costs(cfg), (1.0 if driver_name(cfg) in ("main", "v3", "v4") else SEC_PER_UNIT_DEFAULT)
     except ImportError:  # versions before 0.2 have only the E0 driver
         from crossleak.experiments.e0 import build_cells
 

@@ -1,0 +1,41 @@
+{
+  "_comment": "The three analysed result bundles. make_deposit.py finds them by sha256 and copies them unchanged.",
+  "bundles": [
+    {
+      "name": "crossleak_v0.1.2_20261113-221812_all-e0.zip",
+      "sha256": "25856cd27c6e7e9134ce425b3fb2aee4b078424fc002f7c6d65d8bb2df001f21",
+      "bytes": 52517785,
+      "experiment": "e0",
+      "title": "E0 pilot / killer experiment",
+      "prereg": "prereg/E0_PREREG.md (frozen by prereg/E0_FREEZE.sha256)",
+      "results_doc": "docs/E0_PILOT_RESULTS.md",
+      "release": "v0.1.2",
+      "branch": "release/v0.1.2",
+      "commit": "b2f97e8ab7137f718d5ae739193c0bf10fce8bc2"
+    },
+    {
+      "name": "crossleak_v0.2.0_20261114-094533_all-main.zip",
+      "sha256": "495a2f3e562543c3fc7b7bea422f9c5e87e3c8a81eaf181e1b128cd6506f0b2f",
+      "bytes": 91793861,
+      "experiment": "main",
+      "title": "Main study",
+      "prereg": "prereg/MAIN_PREREG.md (frozen by prereg/MAIN_FREEZE.sha256)",
+      "results_doc": "docs/MAIN_RESULTS.md",
+      "release": "v0.2.0",
+      "branch": "release/v0.2.0",
+      "commit": "b96cdcbb6e7f4cde4a60c57f368ef3a27298e075"
+    },
+    {
+      "name": "crossleak_v0.3.0_20261114-185432_all-v3.zip",
+      "sha256": "a077a8fd835b4c1131728eb0f4c2d7800319c5770fcf2f49c4fec65dcea50aed",
+      "bytes": 42968476,
+      "experiment": "v3",
+      "title": "Confirmatory study",
+      "prereg": "prereg/V3_PREREG.md (frozen by prereg/V3_FREEZE.sha256)",
+      "results_doc": "docs/V3_RESULTS.md",
+      "release": "v0.3.0",
+      "branch": "release/v0.3.0",
+      "commit": "f8f51b81e36246df24f4090ece6ba54402bb05a5"
+    }
+  ]
+}

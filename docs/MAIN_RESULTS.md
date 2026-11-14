@@ -1,5 +1,10 @@
 # Results of the main study (MAIN_PREREG v0.2.0; report of 2026-11-14)
 
+> Update (v0.3, `docs/V3_RESULTS.md`): CL5 = NO below is superseded by the v0.3 confirmatory test S1 (a stronger
+> sybil attacker leaks at k = 256 on ELD), and CL1b is replaced by the v0.3 equivalence test E2. A post hoc
+> seasonal-naive comparison (`docs/reanalysis/snaive_baseline.py`) qualifies CL1 on ELD. The v0.2 verdicts below are
+> unchanged and reported as computed.
+
 Release `release/v0.2.0`, commit b96cdcb (clean checkout on every machine). Plan frozen 2026-11-13T16:59Z
 (`prereg/MAIN_FREEZE.sha256`: **match**; E0 freeze: match). Bundle `crossleak_v0.2.0_20261114-094533_all-main.zip`;
 its `RESULT.json` lists the sha256 of the five machine artifacts. Every number below comes from
@@ -73,8 +78,10 @@ c2small: cross-learning +4.7 % (k = 4); D4 retains 0.66–0.97 at ε = 1–4.
 - Day-level events, pairs, c2base: L5 (idiosyncratic) ΔAUC ELD 0.064 [0.011, 0.114], LifeSnaps 0.113 [0.067, 0.186];
   L4 (self-relative) ELD −0.008 (n.s.), LifeSnaps 0.136 [0.100, 0.184]. L3 (low-activity day) AUC 0.664 (ctrl 0.613).
 - Linkage N = 50 (ELD, pairs): top-1 0.035 c2base, 0.098 c2small (chance 0.02).
-- Nonlinear decoders (gradient boosting, MLP) were weaker than the linear ones everywhere (e.g. ELD pair 0.532 vs 0.717);
-  at these sample sizes the linear decoder is the strongest attacker tested.
+- Nonlinear decoders (gradient boosting, MLP) were weaker than the linear ones wherever the linear decoder detected
+  leakage (e.g. ELD pair 0.532 vs 0.717); they were marginally higher in 3 of 36 configurations, all without meaningful
+  leakage (AUC ≤ 0.56). At these sample sizes the linear decoder is the strongest attacker tested. (Corrected on
+  2026-11-14: the first version said "everywhere"; full-decoder report in `docs/reanalysis/main_full_decoders/`.)
 - DP audit (adversary knowing every other user, sees the release): ELD AUC L1 0.504 / 0.530 / 0.590 at ε = 0.5 / 1 / 4
   (ceilings 0.73 / 0.88 / 1.00); 0.934 without noise (the 14-day mean profile reveals the stable routine).
 - Cost (one VM, others idle, 4 threads), ms per user p50: c2base isolated 49 (batched) / 93 (single request); cross-learning

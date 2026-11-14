@@ -1,0 +1,33 @@
+== equivalence (own bootstrap by user, 90% CI, 5,000 resamples, three seeds) ==
+eld       d1_16       - xl16  : +0.0006  90% lo -0.0040..-0.0040  hi +0.0054..+0.0055  -> ['EQ', 'EQ', 'EQ']  n=600 users=49
+eld       d4_P8_eps1  - xl16  : +0.0063  90% lo -0.0062..-0.0058  hi +0.0195..+0.0196  -> ['EQ', 'EQ', 'EQ']  n=600 users=49
+eld       d4_P8_eps1  - d1_16 : +0.0056  90% lo -0.0057..-0.0054  hi +0.0177..+0.0180  -> ['EQ', 'EQ', 'EQ']  n=600 users=49
+lifesnaps d1_4        - xl8   : -0.0040  90% lo -0.0118..-0.0118  hi +0.0037..+0.0038  -> ['EQ', 'EQ', 'EQ']  n=600 users=13
+lifesnaps d4_P8_eps1  - xl8   : +0.0202  90% lo +0.0010..+0.0018  hi +0.0348..+0.0356  -> ['NOT', 'NOT', 'NOT']  n=600 users=13
+eld ell=72 xl16  gain +0.0115 90% [+0.0033, +0.0213]
+eld ell=72 xl4   gain +0.0051 90% [-0.0021, +0.0147]
+
+== seasonal-naive baseline (repeat the last 24 h), paired, 95% CI ==
+eld       c2base ell=24 xl16       : gain(config) - gain(snaive) -0.0491 [-0.1150, +0.0081]
+eld       c2base ell=24 d1_16      : gain(config) - gain(snaive) -0.0485 [-0.1159, +0.0082]
+eld       c2base ell=24 d4_P8_eps1 : gain(config) - gain(snaive) -0.0428 [-0.1081, +0.0143]
+eld       c2base ell=24 d4_P8_eps4 : gain(config) - gain(snaive) -0.0317 [-0.0945, +0.0224]
+eld       c2base ell=24 full       : gain(config) - gain(snaive) +0.3994 [+0.3115, +0.4826]
+eld       c2small ell=24 xl16       : gain(config) - gain(snaive) -0.1092 [-0.1912, -0.0237]
+eld       c2small ell=24 d1_16      : gain(config) - gain(snaive) -0.1141 [-0.1981, -0.0244]
+eld       c2small ell=24 d4_P8_eps1 : gain(config) - gain(snaive) -0.1113 [-0.1913, -0.0288]
+eld       c2small ell=24 d4_P8_eps4 : gain(config) - gain(snaive) -0.1018 [-0.1794, -0.0223]
+eld       c2small ell=24 full       : gain(config) - gain(snaive) +0.3854 [+0.2706, +0.5357]
+lifesnaps c2base ell=24 xl8        : gain(config) - gain(snaive) +0.2700 [+0.1805, +0.3587]
+lifesnaps c2base ell=24 d4_P8_eps1 : gain(config) - gain(snaive) +0.2908 [+0.2153, +0.3669]
+lifesnaps c2base ell=24 d4_P8_eps4 : gain(config) - gain(snaive) +0.2922 [+0.2155, +0.3684]
+lifesnaps c2base ell=24 full       : gain(config) - gain(snaive) +0.5089 [+0.4695, +0.5539]
+eld       c2base ell=72 xl16       : gain(config) - gain(snaive) +0.3034 [+0.2603, +0.3624]
+eld       c2base ell=72 full       : gain(config) - gain(snaive) +0.6630 [+0.5560, +0.7375]
+
+== stronger sybil attacker: own labels from raw data, own decoders (95% CI by victim) ==
+eld       c2small sybil  k=256: residual AUC L1 0.598 [0.542, 0.651] ctrl 0.496 dAUC +0.102 [+0.034, +0.167] | dr1 +0.128 [+0.086, +0.170] | label agreement 1.000 | n_tr 1500 n_te 500
+eld       c2small sybil  k= 64: residual AUC L1 0.603 [0.555, 0.651] ctrl 0.542 dAUC +0.061 [-0.001, +0.122] | dr1 +0.137 [+0.093, +0.179] | label agreement 1.000 | n_tr 2000 n_te 600
+lifesnaps c2small sybil  k=256: residual AUC L1 0.539 [0.474, 0.589] ctrl 0.530 dAUC +0.008 [-0.065, +0.066] | dr1 +0.078 [+0.050, +0.114] | label agreement 0.950 | n_tr 1500 n_te 500
+eld       c2base sybil  k= 16: residual AUC L1 0.677 [0.630, 0.723] ctrl 0.535 dAUC +0.142 [+0.084, +0.199] | dr1 +0.204 [+0.150, +0.260] | label agreement 0.998 | n_tr 2000 n_te 600
+eld       c2base single k=  2: residual AUC L1 0.718 [0.669, 0.766] ctrl 0.523 dAUC +0.196 [+0.132, +0.256] | dr1 +0.218 [+0.170, +0.268] | label agreement 1.000 | n_tr 1500 n_te 600

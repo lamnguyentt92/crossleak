@@ -1,0 +1,56 @@
+v0.2 eld       c2base ell=24: snaive gain vs isolated +0.033 [-0.113, +0.152]  (n=300)
+v0.2 eld       c2base ell=24:   gain(xl4) - gain(snaive) +0.057 [-0.054, +0.190]
+v0.2 eld       c2base ell=24:   gain(xl16) - gain(snaive) +0.074 [-0.032, +0.204]
+v0.2 eld       c2base ell=24:   gain(d1_4) - gain(snaive) +0.060 [-0.050, +0.193]
+v0.2 eld       c2base ell=24:   gain(d1_16) - gain(snaive) +0.076 [-0.032, +0.204]
+v0.2 eld       c2base ell=24:   gain(d4_P8_eps1) - gain(snaive) +0.079 [-0.027, +0.207]
+v0.2 eld       c2base ell=24:   gain(d4_P8_eps4) - gain(snaive) +0.084 [-0.021, +0.211]
+v0.2 eld       c2small ell=24: snaive gain vs isolated +0.081 [-0.008, +0.175]  (n=300)
+v0.2 eld       c2small ell=24:   gain(xl4) - gain(snaive) -0.034 [-0.119, +0.045]
+v0.2 eld       c2small ell=24:   gain(xl16) - gain(snaive) -0.036 [-0.123, +0.044]
+v0.2 eld       c2small ell=24:   gain(d1_4) - gain(snaive) -0.046 [-0.133, +0.036]
+v0.2 eld       c2small ell=24:   gain(d1_16) - gain(snaive) -0.046 [-0.135, +0.034]
+v0.2 eld       c2small ell=24:   gain(d4_P8_eps1) - gain(snaive) -0.051 [-0.139, +0.028]
+v0.2 eld       c2small ell=24:   gain(d4_P8_eps4) - gain(snaive) -0.044 [-0.129, +0.033]
+v0.2 eld       c2base ell=72: snaive gain vs isolated -0.362 [-0.428, -0.285]  (n=300)
+v0.2 eld       c2base ell=72:   gain(xl4) - gain(snaive) +0.348 [+0.285, +0.411]
+v0.2 eld       c2base ell=72:   gain(xl16) - gain(snaive) +0.359 [+0.300, +0.417]
+v0.2 lifesnaps c2base ell=24: snaive gain vs isolated -0.337 [-0.438, -0.234]  (n=263)
+v0.2 lifesnaps c2base ell=24:   gain(xl4) - gain(snaive) +0.352 [+0.254, +0.446]
+v0.2 lifesnaps c2base ell=24:   gain(xl8) - gain(snaive) +0.361 [+0.261, +0.456]
+v0.2 lifesnaps c2base ell=24:   gain(d1_4) - gain(snaive) +0.354 [+0.253, +0.450]
+v0.2 lifesnaps c2base ell=24:   gain(d4_P8_eps1) - gain(snaive) +0.365 [+0.285, +0.438]
+v0.2 lifesnaps c2base ell=24:   gain(d4_P8_eps4) - gain(snaive) +0.365 [+0.288, +0.436]
+v0.2 lifesnaps c2small ell=24: snaive gain vs isolated -0.275 [-0.384, -0.165]  (n=263)
+v0.2 lifesnaps c2small ell=24:   gain(xl4) - gain(snaive) +0.312 [+0.209, +0.408]
+v0.2 lifesnaps c2small ell=24:   gain(xl8) - gain(snaive) +0.321 [+0.217, +0.418]
+v0.2 lifesnaps c2small ell=24:   gain(d1_4) - gain(snaive) +0.319 [+0.220, +0.413]
+v0.2 lifesnaps c2small ell=24:   gain(d4_P8_eps1) - gain(snaive) +0.310 [+0.219, +0.397]
+v0.2 lifesnaps c2small ell=24:   gain(d4_P8_eps4) - gain(snaive) +0.309 [+0.220, +0.392]
+v0.3 eld       c2base ell=24: snaive gain vs isolated +0.146 [+0.069, +0.233]  (n=600)
+v0.3 eld       c2base ell=24:   gain(xl4) - gain(snaive) -0.064 [-0.132, -0.005]
+v0.3 eld       c2base ell=24:   gain(xl16) - gain(snaive) -0.049 [-0.115, +0.008]
+v0.3 eld       c2base ell=24:   gain(d1_16) - gain(snaive) -0.048 [-0.116, +0.008]
+v0.3 eld       c2base ell=24:   gain(d4_P8_eps1) - gain(snaive) -0.043 [-0.108, +0.014]
+v0.3 eld       c2base ell=24:   gain(d4_P8_eps4) - gain(snaive) -0.032 [-0.094, +0.022]
+v0.3 eld       c2small ell=24: snaive gain vs isolated +0.139 [+0.042, +0.229]  (n=600)
+v0.3 eld       c2small ell=24:   gain(xl4) - gain(snaive) -0.101 [-0.180, -0.018]
+v0.3 eld       c2small ell=24:   gain(xl16) - gain(snaive) -0.109 [-0.191, -0.024]
+v0.3 eld       c2small ell=24:   gain(d1_16) - gain(snaive) -0.114 [-0.198, -0.024]
+v0.3 eld       c2small ell=24:   gain(d4_P8_eps1) - gain(snaive) -0.111 [-0.191, -0.029]
+v0.3 eld       c2small ell=24:   gain(d4_P8_eps4) - gain(snaive) -0.102 [-0.179, -0.022]
+v0.3 eld       c2base ell=72: snaive gain vs isolated -0.292 [-0.348, -0.252]  (n=600)
+v0.3 eld       c2base ell=72:   gain(xl4) - gain(snaive) +0.297 [+0.253, +0.357]
+v0.3 eld       c2base ell=72:   gain(xl16) - gain(snaive) +0.303 [+0.260, +0.362]
+v0.3 lifesnaps c2base ell=24: snaive gain vs isolated -0.258 [-0.352, -0.164]  (n=528)
+v0.3 lifesnaps c2base ell=24:   gain(xl4) - gain(snaive) +0.267 [+0.173, +0.358]
+v0.3 lifesnaps c2base ell=24:   gain(xl8) - gain(snaive) +0.270 [+0.180, +0.359]
+v0.3 lifesnaps c2base ell=24:   gain(d1_4) - gain(snaive) +0.267 [+0.174, +0.359]
+v0.3 lifesnaps c2base ell=24:   gain(d4_P8_eps1) - gain(snaive) +0.291 [+0.215, +0.367]
+v0.3 lifesnaps c2base ell=24:   gain(d4_P8_eps4) - gain(snaive) +0.292 [+0.215, +0.368]
+v0.3 lifesnaps c2small ell=24: snaive gain vs isolated -0.242 [-0.347, -0.139]  (n=530)
+v0.3 lifesnaps c2small ell=24:   gain(xl4) - gain(snaive) +0.279 [+0.180, +0.377]
+v0.3 lifesnaps c2small ell=24:   gain(xl8) - gain(snaive) +0.285 [+0.187, +0.383]
+v0.3 lifesnaps c2small ell=24:   gain(d1_4) - gain(snaive) +0.285 [+0.188, +0.380]
+v0.3 lifesnaps c2small ell=24:   gain(d4_P8_eps1) - gain(snaive) +0.278 [+0.187, +0.370]
+v0.3 lifesnaps c2small ell=24:   gain(d4_P8_eps4) - gain(snaive) +0.278 [+0.186, +0.371]

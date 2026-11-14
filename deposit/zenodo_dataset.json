@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "upload_type": "dataset",
+    "title": "CrossLeak experiment data: co-tenant leakage of in-context cross-learning in time-series foundation models (Chronos-2)",
+    "creators": [
+      {
+        "name": "Nguyen, Tran Thanh Lam",
+        "affiliation": "HCMC University of Technology and Engineering (HCMUTE), Ho Chi Minh City, Vietnam"
+      }
+    ],
+    "description": "<p>Result bundles of three pre-registered experiment campaigns (E0 pilot, main study, confirmatory study) on privacy leakage between users whose series are forecast jointly by Chronos-2 in cross-learning (group attention) mode, and on defences (public-context groups, large groups, a differentially private prototype context). Each bundle contains the per-cell results and per-sample arrays, the merged report, the frozen plans and configuration, environment records and every log of the five-machine CPU testbed. The deposit also contains the source code of the release that produced each bundle and the analysis code. Parts of the arrays are derived from the ElectricityLoadDiagrams20112014 dataset (UCI, doi:10.24432/C58C86) and the LifeSnaps dataset (Zenodo, doi:10.5281/zenodo.7229547), both CC BY 4.0. See README_DATA.md.</p>",
+    "access_right": "open",
+    "license": "cc-by-4.0",
+    "language": "eng",
+    "keywords": [
+      "time-series foundation models",
+      "Chronos-2",
+      "cross-learning",
+      "privacy",
+      "multi-tenant inference",
+      "inference attacks",
+      "differential privacy",
+      "edge computing",
+      "forecasting",
+      "smart meter",
+      "wearables"
+    ],
+    "related_identifiers": [
+      {
+        "identifier": "https://github.com/lamnguyentt92/crossleak",
+        "relation": "isSupplementTo",
+        "resource_type": "software",
+        "scheme": "url"
+      },
+      {
+        "identifier": "10.24432/C58C86",
+        "relation": "isDerivedFrom",
+        "resource_type": "dataset",
+        "scheme": "doi"
+      },
+      {
+        "identifier": "10.5281/zenodo.7229547",
+        "relation": "isDerivedFrom",
+        "resource_type": "dataset",
+        "scheme": "doi"
+      },
+      {
+        "identifier": "10.1038/s41597-022-01764-x",
+        "relation": "references",
+        "resource_type": "publication-article",
+        "scheme": "doi"
+      }
+    ],
+    "notes": "Experiment outputs: CC BY 4.0. Code archives in this record: MIT (LICENSE-CODE.txt). The three bundles are byte-identical to the analysed bundles; their sha256 values are listed in SHA256SUMS and in deposit/bundles.json of the code repository."
+  }
+}

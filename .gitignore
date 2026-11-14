@@ -10,3 +10,14 @@ reports/
 .setup_ok
 RELEASE_COMMIT
 .code.tar.gz
+AutogluonModels/
+
+# LaTeX build outputs (paper/)
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.log
+paper/*.out
+paper/submission/
