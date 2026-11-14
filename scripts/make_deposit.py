@@ -157,8 +157,10 @@ def render_readme(template: str, *, files: list[str], upload: Path, bundles: lis
         rows.append(f"| `{name}` | {size} | {file_description(name, bundles, code)} |")
     brows = []
     for b in bundles:
-        brows.append(f"| `{b['name']}` | {b['title']} | `{b.get('prereg', '')}` | `{b.get('results_doc', '')}` | "
-                     f"{b['release']} (`{b['branch']}`, {b['commit'][:7]}) |")
+        rec = b.get("recorded_commit", b["commit"])
+        made = f"{b['release']} (`{b['branch']}`, {b['commit'][:7]}"
+        made += f"; recorded in the bundle as {rec[:7]})" if rec != b["commit"] else ")"
+        brows.append(f"| `{b['name']}` | {b['title']} | `{b.get('prereg', '')}` | `{b.get('results_doc', '')}` | {made} |")
     out = template
     for key, val in {"{{FILES_TABLE}}": "\n".join(rows), "{{BUNDLES_TABLE}}": "\n".join(brows),
                      "{{DATA_VERSION}}": DATA_VERSION, "{{CODE_RELEASE}}": release, "{{CODE_COMMIT}}": commit[:7],

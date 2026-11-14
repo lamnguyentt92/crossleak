@@ -70,3 +70,23 @@ def test_frozen_main_driver_is_unchanged():
                 if l.endswith("src/crossleak/experiments/main.py"))
     digest = line.split()[0]
     assert hashlib.sha256((ROOT / "src/crossleak/experiments/main.py").read_bytes()).hexdigest() == digest
+
+
+def test_watch_detects_the_running_experiment(tmp_path):
+    """Regression (v0.4.0): the dashboard's auto-detection used `glob` without importing it."""
+    import importlib.util
+    import os
+    import time
+
+    spec = importlib.util.spec_from_file_location("watch", ROOT / "scripts" / "watch.py")
+    w = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(w)
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "main.yaml").write_text("experiment: main\n")
+    assert w.detect_config(str(tmp_path)) == "configs/main.yaml"
+    for exp in ("v3", "v4"):
+        d = tmp_path / "runs" / exp
+        d.mkdir(parents=True)
+        (d / "plan_main_shard0of5.json").write_text("{}")
+        os.utime(d / "plan_main_shard0of5.json", (time.time() + (1 if exp == "v4" else 0),) * 2)
+    assert w.detect_config(str(tmp_path)) == "configs/v4.yaml"

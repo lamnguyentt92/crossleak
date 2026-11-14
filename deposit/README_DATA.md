@@ -1,7 +1,7 @@
 # CrossLeak experiment data (deposit version {{DATA_VERSION}})
 
 **CrossLeak: co-tenant leakage of in-context cross-learning in time-series foundation models.**
-Result bundles of the three pre-registered experiment campaigns, the code that produced each bundle, and the
+Result bundles of the four pre-registered experiment campaigns, the code that produced each bundle, and the
 analysis code at release {{CODE_RELEASE}}.
 
 - Creator: Tran Thanh Lam Nguyen, Faculty of Information Technology, HCMC University of Technology and Engineering
@@ -18,7 +18,8 @@ Chronos-2 can forecast several series jointly ("cross-learning", group attention
 series of different users into one group, a group member's forecast can depend on the other members' histories. The
 campaigns measure (1) the forecasting benefit of cross-learning for users with little history, (2) what a group member
 (or an attacker controlling several members) can infer about another member's previous day, and (3) defences: a
-public-context group (D1), large groups (D2) and a differentially private prototype context (D4, "DP-Prototype").
+public-context group (D1), large groups (D2) and a differentially private prototype context (D4, "DP-Prototype"),
+including a causal variant whose public data come only from before the forecast origin (v0.4).
 Models: `amazon/chronos-2` and `autogluon/chronos-2-small` (chronos-forecasting 2.3.2), run on CPU.
 
 Every campaign followed a plan frozen by hash before its first run. The plans, freeze files, results documents and independent
@@ -36,8 +37,11 @@ same channel through AutoGluon `TimeSeriesPredictor` (`docs/AGCHECK.md`); edge c
 `DEPOSIT_MANIFEST.json` records how the deposit was assembled (where each bundle was found, the git commit of each code
 archive, warnings).
 
-The three bundles are byte-identical to the bundles analysed in the results documents (same sha256 as in
+The four bundles are byte-identical to the bundles analysed in the results documents (same sha256 as in
 `deposit/bundles.json` of the code archive). They were not edited for publication.
+Each bundle's `controller_state/git_state.txt` records the commit of the development repository that produced it;
+the release listed below contains the same code, and `scripts/check_provenance.py` (code archive of the latest
+release) confirms that every file frozen by the campaign's plan is byte-identical to the archived code.
 
 | Bundle | Campaign | Plan | Results | Produced by |
 |---|---|---|---|---|

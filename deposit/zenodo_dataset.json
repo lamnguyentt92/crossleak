@@ -8,7 +8,7 @@
         "affiliation": "HCMC University of Technology and Engineering (HCMUTE), Ho Chi Minh City, Vietnam"
       }
     ],
-    "description": "<p>Result bundles of three pre-registered experiment campaigns (E0 pilot, main study, confirmatory study) on privacy leakage between users whose series are forecast jointly by Chronos-2 in cross-learning (group attention) mode, and on defences (public-context groups, large groups, a differentially private prototype context). Each bundle contains the per-cell results and per-sample arrays, the merged report, the frozen plans and configuration, environment records and every log of the five-machine CPU testbed. The deposit also contains the source code of the release that produced each bundle and the analysis code. Parts of the arrays are derived from the ElectricityLoadDiagrams20112014 dataset (UCI, doi:10.24432/C58C86) and the LifeSnaps dataset (Zenodo, doi:10.5281/zenodo.7229547), both CC BY 4.0. See README_DATA.md.</p>",
+    "description": "<p>Result bundles of four pre-registered experiment campaigns (E0 pilot, main study, confirmatory study, causal-defence study) on privacy leakage between users whose series are forecast jointly by Chronos-2 in cross-learning (group attention) mode, and on defences (public-context groups, large groups, a differentially private prototype context). Each bundle contains the per-cell results and per-sample arrays, the merged report, the frozen plans and configuration, environment records and every log of the five-machine CPU testbed. The deposit also contains the source code of the release that produced each bundle and the analysis code. Parts of the arrays are derived from the ElectricityLoadDiagrams20112014 dataset (UCI, doi:10.24432/C58C86) and the LifeSnaps dataset (Zenodo, doi:10.5281/zenodo.7229547), both CC BY 4.0. See README_DATA.md.</p>",
     "access_right": "open",
     "license": "cc-by-4.0",
     "language": "eng",
@@ -51,6 +51,6 @@
         "scheme": "doi"
       }
     ],
-    "notes": "Experiment outputs: CC BY 4.0. Code archives in this record: MIT (LICENSE-CODE.txt). The three bundles are byte-identical to the analysed bundles; their sha256 values are listed in SHA256SUMS and in deposit/bundles.json of the code repository."
+    "notes": "Experiment outputs: CC BY 4.0. Code archives in this record: MIT (LICENSE-CODE.txt). The four bundles are byte-identical to the analysed bundles; their sha256 values are listed in SHA256SUMS and in deposit/bundles.json of the code repository."
   }
 }

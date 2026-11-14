@@ -84,6 +84,21 @@ Format: ID — date — decision — reason.
   approved to repeat the equivalence tests with public data from before the origin. Further experiments that were
   considered (base model at k = 256, several training seeds, output rounding as a defence) were not run; they are stated
   as limitations.
+- **D-034** — 2026-11-14 — v0.4 read (docs/V4_RESULTS.md). Per prereg/V4_PREREG.md section 5: E1c-1 EQUIVALENT, so
+  past-only public context is stated as equivalent to cross-learning on ELD; E1c-2/3 NOT_EQUIVALENT, so the v0.3 ELD D4
+  equivalence did not replicate and the D4 claim is narrowed to "keeps most of the gain; −2.34 to +1.97 pp across the
+  two campaigns"; E1c-4/5 reported with the caveat of few users (6 LifeSnaps users). The v0.3 verdicts remain reported.
+  Independent re-analysis agrees (docs/reanalysis/v4_reanalysis_v0.4.0.*). No post hoc analysis on the v0.4 data.
 
 ## Deviations log
-None so far.
+- 2026-11-14, before any v0.4 data — erratum to prereg/V4_PREREG.md section 2 (the frozen file is left unchanged): it
+  says v0.4 uses "the same user pools ... and the same cold-start users". The pools (victim/aux/public, pool seed
+  20261112) are the same, but the cold-start subset of the victim pool is drawn with the campaign seed
+  (`experiments/main.py`, `DS.__init__`), so v0.4 (seed 20261116) has different cold-start users from v0.3, as v0.3 had
+  from v0.2 (overlap 13 of 49 ELD users and 7 of 14 LifeSnaps users between v0.2 and v0.3). The confirmatory rules are
+  unaffected: all comparisons are paired within v0.4. Found during the pre-submission check; the paper describes the
+  redraw (Sect. 6).
+- 2026-11-14, observation on the v0.4 data (no procedural deviation) — prereg/V4_PREREG.md section 3 expected 13
+  LifeSnaps cold-start users. The origin rule of section 2 (past public windows at least 56 days before the origin and,
+  on LifeSnaps, past centres) leaves only 6 of them with an origin (64 feasible days; 172 distinct user-days among the
+  600 targets, drawn with replacement). The rules were applied as frozen; the paper states the 6 users (Sects. 6, 8).

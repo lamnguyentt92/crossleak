@@ -21,3 +21,4 @@ paper/*.fls
 paper/*.log
 paper/*.out
 paper/submission/
+paper/generated/

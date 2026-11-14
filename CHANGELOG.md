@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.0.0
+Release for the paper: results documents of all campaigns (`docs/*_RESULTS.md`), independent re-analyses (`docs/reanalysis/`), generator of every number, table and figure of the paper (`paper/make_assets.py`), data-deposit builder (`scripts/make_deposit.py`, `deposit/`), frozen-file check (`scripts/check_provenance.py`), dashboard fix. Experiment and analysis code unchanged.
+
 ## v0.4.0
 Causal-defence study: D1 public windows and LifeSnaps D4 centres restricted to data from before the forecast origin, next to the original configurations on the same targets; the frozen main driver is patched at run time only; plan frozen by `prereg/V4_FREEZE.sha256`. Known issue: `scripts/watch.sh` without `--config` stops with a NameError (dashboard only; fixed in v1.0.0).
 

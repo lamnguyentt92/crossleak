@@ -119,7 +119,7 @@ def test_deposit_allow_missing_and_explicit_bundle(setup, tmp_path):
 
 def test_real_bundle_list_is_consistent():
     data = json.loads((ROOT / "deposit" / "bundles.json").read_text())["bundles"]
-    assert len(data) == 3 and len({b["sha256"] for b in data}) == 3
+    assert len(data) == 4 and len({b["sha256"] for b in data}) == 4
     for b in data:
         assert len(b["sha256"]) == 64 and len(b["commit"]) == 40 and b["bytes"] > 0
         assert b["name"].startswith(f"crossleak_{b['release']}_")

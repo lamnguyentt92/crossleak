@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import base64
 import datetime as dt
+import glob
 import json
 import os
 import shlex
@@ -165,6 +166,14 @@ def shard_eta(st: dict, cost: dict, sec_per_unit: float, speed_est: dict) -> tup
     return (1 - rem / total) if total else 0.0, max(rem, 0.0), total
 
 
+def detect_config(root: str) -> str:
+    """The running experiment's config: newest plan file under <root>/runs (root is crossleak-v<version>)."""
+    plans = sorted(glob.glob(os.path.join(root, "runs", "*", "plan_*shard*.json")), key=os.path.getmtime)
+    if plans:
+        return f"configs/{os.path.basename(os.path.dirname(plans[-1]))}.yaml"
+    return "configs/main.yaml" if Path(root, "configs/main.yaml").exists() else "configs/e0.yaml"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--version", required=True)
@@ -176,16 +185,7 @@ def main() -> int:
     a = ap.parse_args()
     import yaml
 
-    if a.config:
-        config = a.config
-    else:
-        # auto-detect the running experiment from the newest plan file under ./runs (cwd is crossleak-v<version>)
-        plans = sorted(glob.glob(os.path.join("runs", "*", "plan_*shard*.json")), key=os.path.getmtime)
-        if plans:
-            exp_detected = os.path.basename(os.path.dirname(plans[-1]))
-            config = f"configs/{exp_detected}.yaml"
-        else:
-            config = "configs/main.yaml" if Path("configs/main.yaml").exists() else "configs/e0.yaml"
+    config = a.config or detect_config(".")
     if a.smoke and not config.endswith("_smoke.yaml"):
         config = config.replace(".yaml", "_smoke.yaml")
     exp = yaml.safe_load(open(config))["experiment"]
