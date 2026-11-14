@@ -22,7 +22,7 @@ Each campaign followed a plan frozen by SHA-256 before its first run; its result
 | Causal-defence study | `release/v0.4.0` | `prereg/V4_PREREG.md` | `configs/v4.yaml` | `docs/V4_RESULTS.md` | `crossleak_v0.4.0_20261114-223724_all-v4.zip` |
 
 The bundles (per-cell results, per-sample arrays, merged reports, frozen plans, logs) are at Zenodo,
-`doi:10.5281/zenodo.XXXXXXX`. Their sha256 values are in `deposit/bundles.json`. Each bundle's
+[doi:10.5281/zenodo.24224346](https://doi.org/10.5281/zenodo.24224346). Their sha256 values are in `deposit/bundles.json`. Each bundle's
 `controller_state/git_state.txt` records the commit of the development repository that produced it; the release
 branch above contains the same code (see "Check the frozen files" below). Decisions and deviations: `DECISIONS.md`.
 Design, threat model and the DP proof: `docs/DESIGN.md`, `docs/THEORY.md`. AutoGluon check: `docs/AGCHECK.md`.
@@ -59,6 +59,9 @@ python paper/make_assets.py --main-zip bundles/crossleak_v0.2.0_*_all-main.zip \
 
 # independent re-analysis of the causal-defence study (standard library + numpy only)
 python docs/reanalysis/v4_reanalysis_v0.4.0.py bundles/crossleak_v0.4.0_*_all-v4.zip
+
+# post hoc analyses reported in the paper (seasonal naive, D4 sensitivity, margins, simultaneous intervals)
+python docs/reanalysis/posthoc_r2.py --v3 bundles/crossleak_v0.3.0_*_all-v3.zip --v4 bundles/crossleak_v0.4.0_*_all-v4.zip
 ```
 Verdicts and estimands are recomputed from the per-sample outputs. With a different scikit-learn version, decoder AUCs
 can differ in the third decimal (for example 0.604 instead of 0.605); the versions used are recorded in each bundle

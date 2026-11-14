@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.0.1
+Data deposit DOI; post hoc analyses after the final pre-submission review (docs/reanalysis/posthoc_r2.py, summary in docs/V4_RESULTS.md); paper asset generator updated (post hoc numbers, LifeSnaps seasonal-naive range over three studies). Experiment and analysis code unchanged.
+
 ## v1.0.0
 Release for the paper: results documents of all campaigns (`docs/*_RESULTS.md`), independent re-analyses (`docs/reanalysis/`), generator of every number, table and figure of the paper (`paper/make_assets.py`), data-deposit builder (`scripts/make_deposit.py`, `deposit/`), frozen-file check (`scripts/check_provenance.py`), dashboard fix. Experiment and analysis code unchanged.
 

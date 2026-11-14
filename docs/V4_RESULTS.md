@@ -94,3 +94,21 @@ grouping service is the project's own code.
   within −2.34 to +1.97 pp of cross-learning across two campaigns.
 - May not: DP-Prototype is equivalent to cross-learning (it was in one campaign, not in the other); DP-Prototype is
   better than cross-learning on LifeSnaps.
+
+## Post hoc analyses after the final pre-submission review (labelled; not pre-registered)
+Run on the deposited v0.3 and v0.4 bundles with `docs/reanalysis/posthoc_r2.py` (output `posthoc_r2.out`; user-cluster
+bootstrap, 5,000 resamples). They qualify, and do not replace, the pre-registered verdicts above.
+- **Seasonal naive on the v0.4 targets (P1).** ELD, base model: seasonal naive vs isolated +5.5 % [−5.1, +15.8];
+  cross-learning (k = 16) − seasonal naive +2.6 pp [−5.2, +10.2]; past-only D1 +2.8 [−4.9, +10.6]; D4 (ε = 1)
+  +1.2 [−6.3, +8.9]. No configuration of either model differs significantly from seasonal naive on ELD (small model:
+  −3.8 to −5.3 pp, all intervals include 0). LifeSnaps: every configuration beats seasonal naive by 36–44 pp.
+- **D4 − cross-learning on ELD (P2), 90 % CI.** On the 18 cold-start users drawn in both studies: v0.3 −0.13
+  [−1.91, +1.84], v0.4 +0.43 [−1.24, +2.40]. Both studies pooled (1,200 targets, clusters = study × user): −0.46
+  [−1.23, +0.37], inside the 2 pp margin. LifeSnaps v0.3 restricted to the v0.4 origin window (days ≥ 160): +1.10
+  [−1.30, +3.13]. The v0.4 deficit therefore comes from the users drawn only in v0.4; the pooled estimate supports
+  "keeps most of the gain", not a replicated pre-registered equivalence.
+- **Margin sensitivity (P3).** The ELD public-context intervals fit within ±0.56 pp in both studies; LifeSnaps public
+  context needs ±1.18 (v0.3) and ±1.60 (v0.4); D4 needs ±1.97 (v0.3) and ±2.34 (v0.4) on ELD.
+- **Simultaneous intervals (P4).** With Bonferroni over each study's five equivalence tests (98 % CI), only the
+  public-context equivalences remain (ELD within ±0.73 pp; LifeSnaps v0.4 [−1.95, +0.08]); the v0.3 D4 equivalences
+  would not hold (upper bounds +2.54 and +2.35).

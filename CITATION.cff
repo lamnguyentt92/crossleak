@@ -1,4 +1,4 @@
-cff-version: 1.2.0
+cff-version: 1.0.1
 message: "If you use this software, please cite it as below."
 title: "CrossLeak: co-tenant leakage of in-context cross-learning in time-series foundation models"
 authors:

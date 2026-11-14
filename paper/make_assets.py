@@ -121,6 +121,64 @@ def parse_fallback(path: Path) -> dict:
     return out
 
 
+def parse_posthoc(path: Path) -> dict:
+    """docs/reanalysis/posthoc_r2.out -> values (points) keyed by section and label."""
+    out: dict = {}
+    num = r"([+-][\d.]+) \[([+-][\d.]+), ([+-][\d.]+)\]"
+    ds_mod = None
+    for line in path.read_text().splitlines():
+        m = re.match(r"^(eld|lifesnaps)\s+(c2base|c2small)\s+n=\s*\d+ users=\d+: snaive gain vs isolated " + num, line)
+        if m:
+            ds_mod = (m.group(1), m.group(2))
+            out[("P1", ds_mod, "snaive_vs_iso")] = tuple(float(x) for x in m.groups()[2:])
+            continue
+        m = re.match(r"^\s+(\w+)\s+- snaive " + num, line)
+        if m and ds_mod:
+            out[("P1", ds_mod, m.group(1))] = tuple(float(x) for x in m.groups()[1:])
+            continue
+        m = re.match(r"^\(a\) ELD (v0\.\d), (\d+) cold-start users.*: " + num, line)
+        if m:
+            out[("P2a", m.group(1))] = tuple(float(x) for x in m.groups()[2:])
+            out[("P2a", "users")] = int(m.group(2))
+            continue
+        m = re.match(r"^\(b\) ELD both studies pooled.*: " + num, line)
+        if m:
+            out[("P2b",)] = tuple(float(x) for x in m.groups())
+            continue
+        m = re.match(r"^v0\.(\d) E1c? +(\w+)\s+(\w+)\s+- (\w+)\s*: ([\d.]+)\s+\(at", line)
+        if m:
+            out[("P3", m.group(1), m.group(2), m.group(3), m.group(4))] = float(m.group(5))
+            continue
+        m = re.match(r"^v0\.(\d) E1c? +(\w+)\s+(\w+)\s+- (\w+)\s*: " + num + r"\s+(\w+)", line)
+        if m:
+            out[("P4", m.group(1), m.group(2), m.group(3), m.group(4))] = (float(m.group(5)), float(m.group(6)),
+                                                                           float(m.group(7)), m.group(8))
+    assert ("P2b",) in out and len([k for k in out if k[0] == "P4"]) == 10, "posthoc_r2.out incomplete"
+    return out
+
+
+def posthoc_numbers(M: Macros, ph: dict) -> None:
+    """Post hoc analyses after the final review (docs/reanalysis/posthoc_r2.out); labelled post hoc in the text."""
+    pts = lambda t, d=1: f"{fnum(t[0], d, True)} [{fnum(t[1], d)}, {fnum(t[2], d)}]"  # noqa: E731
+    src = "posthoc_r2.out"
+    M.put("PhSnIso", pts(ph[("P1", ("eld", "c2base"), "snaive_vs_iso")]), src + " P1 eld base snaive vs isolated, %")
+    M.put("PhSnXl", pts(ph[("P1", ("eld", "c2base"), "xl16")]), src + " P1 eld base xl16 - snaive, points")
+    M.put("PhSnDonep", pts(ph[("P1", ("eld", "c2base"), "d1p_16")]), src + " P1 eld base d1p_16 - snaive")
+    eld = [v for k, v in ph.items() if k[0] == "P1" and k[1][0] == "eld" and k[2] != "snaive_vs_iso"]
+    assert all(lo < 0 < hi for _, lo, hi in eld), "a v0.4 ELD configuration differs significantly from seasonal naive"
+    M.put("PhDfourPooled", pts(ph[("P2b",)], 2), src + " P2b eld d4 - xl16 pooled over v0.3 and v0.4, 90% CI")
+    M.put("PhSharedUsers", str(ph[("P2a", "users")]), src + " P2a cold-start users drawn in both studies")
+    M.put("PhDfourSharedThree", pts(ph[("P2a", "v0.3")], 2), src + " P2a v0.3 shared users")
+    M.put("PhDfourSharedFour", pts(ph[("P2a", "v0.4")], 2), src + " P2a v0.4 shared users")
+    d1 = [v for k, v in ph.items() if k[0] == "P4" and k[2] == "eld" and k[3].startswith("d1")]
+    assert len(d1) == 2 and all(v[3] == "EQUIVALENT" for v in d1)
+    M.put("PhBonfDoneEld", fnum(max(max(abs(v[1]), abs(v[2])) for v in d1), 2), src + " P4 eld D1 98% CI, max |bound|")
+    keep = sorted({(k[1], k[2], k[3]) for k, v in ph.items() if k[0] == "P4" and v[3] == "EQUIVALENT"})
+    assert all(a.startswith("d1") for _, _, a in keep), keep  # only the D1 tests survive the adjustment
+    M.put("PhMarginDoneEld", fnum(max(v for k, v in ph.items() if k[0] == "P3" and k[2] == "eld" and k[3].startswith("d1")), 2),
+          src + " P3 eld D1: smallest margin the 90% CI fits in (both studies)")
+
+
 # ----------------------------------------------------------------------------------------------- numbers
 
 
@@ -452,7 +510,10 @@ def scope_numbers(M: Macros, main: dict, v3: dict, v4: dict, snaive: dict, out: 
     M.put("MainEldThree", " and ".join(cid(g) for g in eld72), "v0.2 eld c2base l=72 xl4, xl16 gains")
     # isolated Chronos-2 vs seasonal naive on LifeSnaps (both campaigns and models): -(snaive gain vs isolated)
     iso_vs = [-v["est"] for (ver, ds, mod, ell, c), v in snaive.items() if ds == "lifesnaps" and ell == 24 and c == "snaive_vs_iso"]
-    M.put("SnaiveLsIsoRange", rng(iso_vs, 100, 0), "lifesnaps: isolated Chronos-2 minus snaive, in points")
+    iso_vs += [-v4["utility"]["lifesnaps"][mod]["24"]["configs"]["snaive"]["gain"]["est"] for mod in ("c2base", "c2small")]
+    M.put("SnaiveLsIsoRange", rng(iso_vs, 100, 0), "lifesnaps: isolated Chronos-2 minus snaive, in points (v0.2-v0.4)")
+    M.put("VfourSnaiveEld", cid(v4["utility"]["eld"]["c2base"]["24"]["configs"]["snaive"]["gain"]),
+          "v4 utility eld c2base snaive gain (pre-registered estimand)")
     nls = sorted({v["n"] for (ver, ds, mod, ell, c), v in snaive.items() if ver == "v0.3" and ds == "lifesnaps" and c == "snaive_vs_iso"})
     M.put("SnaiveLsN", "--".join(str(x) for x in nls) if len(nls) > 1 else str(nls[0]), "v0.3 lifesnaps targets with a seasonal-naive forecast")
     # DP composition at eps = 1 per daily release (delta = 1e-5), from the project's own accountant
@@ -485,7 +546,7 @@ def scope_numbers(M: Macros, main: dict, v3: dict, v4: dict, snaive: dict, out: 
                        ("DPAUDIT", "DP audit below the ceiling")):
         e = lab(V2[f"{rule}_eld"]) + ("$^{*}$" if rule == "CL1b" else "")  # ELD point estimates <= 0: see caption
         rows.append((text, e, lab(V2[f"{rule}_lifesnaps"])))
-    rows.append(("D4: 1,000 users in $\\le$15\\,min", lab(V2["CL8"]), "--"))
+    rows.append(("D4: 1,000 users in $\\le$15\\,min (est.)", lab(V2["CL8"]), "--"))
     rows.append(("\\midrule \\multicolumn{3}{@{}l}{\\emph{Confirmatory study}} \\\\", None, None))
     rows.append(("E1: D1 $\\equiv$ XL", lab(V3["EQ_eld_d1_16_vs_xl16"]), lab(V3["EQ_lifesnaps_d1_4_vs_xl8"])))
     rows.append(("E1: D4 ($\\varepsilon$=1) $\\equiv$ XL", lab(V3["EQ_eld_d4_P8_eps1_vs_xl16"]),
@@ -523,7 +584,7 @@ def figures(main: dict, v3: dict, v4: dict, out: Path) -> None:
     R = v3["attacks_residual"]
     key = lambda ds, fam, fil, k: f"attack__{ds}__c2small__fam-{fam}__filler-{fil}__k-{k}__probe-short"  # noqa: E731
 
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.0))
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 1.85))
     ax = axes[0]
     for ds, col, lab in (("eld", BLUE, "ELD"), ("lifesnaps", ORANGE, "LifeSnaps")):
         for fam, fil, ls, mk, flab in (("single", "none", "-", "o", "one member"), ("sybil", "copy", "--", "s", "sybil, copies")):
@@ -580,7 +641,7 @@ def figures(main: dict, v3: dict, v4: dict, out: Path) -> None:
     eq = v3["equivalence"]
     items += [(f"ELD 3 days: XL$_{{{c[2:]}}}$ gain", (p["gain"], p["lo90"], p["hi90"], p["verdict"]), None)
               for p in eq["no_benefit"] for c in [p["config"]]]
-    fig, ax = plt.subplots(figsize=(3.4, 2.05))
+    fig, ax = plt.subplots(figsize=(3.4, 1.95))
     m = 100 * eq["margin"]
     ax.axvspan(-m, m, color="#f0efec", zorder=0)
     ax.axvline(0, color=MUTED, lw=0.8)
@@ -634,10 +695,12 @@ def main() -> None:
     full = json.loads((REPO / "docs/reanalysis/main_full_decoders/main_summary.json").read_text())
     snaive = parse_snaive(REPO / "docs/reanalysis/snaive_baseline.out")
     fallback = parse_fallback(REPO / "docs/reanalysis/d4_fallback_share.out")
+    posthoc = parse_posthoc(REPO / "docs/reanalysis/posthoc_r2.out")
     M = Macros()
     setup_numbers(M, zm, zv, main_s, v3_s, z4, v4_s)
     utility_numbers(M, main_s, v3_s, v4_s, snaive, fallback, out)
     causal_numbers(M, v3_s, v4_s)
+    posthoc_numbers(M, posthoc)
     attack_numbers(M, main_s, v3_s, full, out)
     channel_numbers(M, main_s, v3_s)
     defence_numbers(M, main_s)

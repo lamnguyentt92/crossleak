@@ -1,0 +1,63 @@
+== P1  seasonal naive on the v0.4 targets: gain(config) - gain(snaive), points, 95 % CI ==
+eld       c2base  n=600 users=49: snaive gain vs isolated +5.47 [-5.10, +15.78]
+    xl4          - snaive +0.94 [-7.27, +9.18]
+    xl16         - snaive +2.63 [-5.16, +10.24]
+    d1_16        - snaive +2.46 [-4.88, +9.37]
+    d1p_16       - snaive +2.83 [-4.90, +10.55]
+    d4_P8_eps1   - snaive +1.22 [-6.29, +8.92]
+    d4_P8_eps4   - snaive +1.90 [-5.42, +9.33]
+eld       c2small n=600 users=49: snaive gain vs isolated +6.76 [-1.14, +15.71]
+    xl4          - snaive -3.75 [-11.84, +3.38]
+    xl16         - snaive -4.85 [-13.01, +2.34]
+    d1_16        - snaive -5.30 [-13.46, +1.86]
+    d1p_16       - snaive -5.33 [-13.55, +1.88]
+    d4_P8_eps1   - snaive -5.05 [-12.84, +1.71]
+    d4_P8_eps4   - snaive -4.37 [-12.12, +2.31]
+lifesnaps c2base  n=546 users=6: snaive gain vs isolated -34.17 [-48.94, -23.88]
+    xl4          - snaive +35.58 [+26.69, +50.16]
+    xl8          - snaive +36.43 [+28.18, +51.12]
+    d1_4         - snaive +35.77 [+26.46, +50.81]
+    d1p_4        - snaive +35.74 [+26.53, +50.71]
+    d4_P8_eps1   - snaive +36.34 [+28.12, +49.23]
+    d4_P8_eps4   - snaive +36.48 [+28.26, +49.57]
+    d4p_P8_eps1  - snaive +36.19 [+27.94, +49.29]
+    d4p_P8_eps4  - snaive +36.50 [+28.24, +49.52]
+lifesnaps c2small n=560 users=6: snaive gain vs isolated -40.74 [-55.58, -27.60]
+    xl4          - snaive +43.34 [+31.48, +57.76]
+    xl8          - snaive +43.87 [+32.22, +58.36]
+    d1_4         - snaive +43.04 [+31.42, +57.55]
+    d1p_4        - snaive +42.97 [+31.21, +57.49]
+    d4_P8_eps1   - snaive +42.16 [+31.70, +55.39]
+    d4_P8_eps4   - snaive +42.30 [+31.65, +56.03]
+    d4p_P8_eps1  - snaive +41.99 [+31.42, +55.42]
+    d4p_P8_eps4  - snaive +42.47 [+31.66, +56.24]
+
+== P2  D4 (eps = 1) - cross-learning, 90 % CI (margin 2 pp) ==
+(a) ELD v0.3, 18 cold-start users drawn in both studies (226 targets): -0.13 [-1.91, +1.84]
+(a) ELD v0.4, 18 cold-start users drawn in both studies (224 targets): +0.43 [-1.24, +2.40]
+(b) ELD both studies pooled (1,200 targets, clusters = study x user): -0.46 [-1.23, +0.37]
+(c) LifeSnaps v0.3 on origin days >= 160 (the v0.4 window; 347 targets, 6 users): +1.10 [-1.30, +3.13]
+
+== P3  smallest symmetric margin each pre-registered 90 % CI fits in (points) ==
+v0.3 E1  eld       d1_16        - xl16   : 0.56  (at 1.0: EQ, at 1.5: EQ, at 2.0: EQ)
+v0.3 E1  eld       d4_P8_eps1   - xl16   : 1.97  (at 1.0: not, at 1.5: not, at 2.0: EQ)
+v0.3 E1  eld       d4_P8_eps1   - d1_16  : 1.82  (at 1.0: not, at 1.5: not, at 2.0: EQ)
+v0.3 E1  lifesnaps d1_4         - xl8    : 1.18  (at 1.0: not, at 1.5: EQ, at 2.0: EQ)
+v0.3 E1  lifesnaps d4_P8_eps1   - xl8    : 3.61  (at 1.0: not, at 1.5: not, at 2.0: not)
+v0.4 E1c eld       d1p_16       - xl16   : 0.56  (at 1.0: EQ, at 1.5: EQ, at 2.0: EQ)
+v0.4 E1c eld       d4_P8_eps1   - xl16   : 2.34  (at 1.0: not, at 1.5: not, at 2.0: not)
+v0.4 E1c eld       d4_P8_eps1   - d1p_16 : 2.56  (at 1.0: not, at 1.5: not, at 2.0: not)
+v0.4 E1c lifesnaps d1p_4        - xl8    : 1.60  (at 1.0: not, at 1.5: not, at 2.0: EQ)
+v0.4 E1c lifesnaps d4p_P8_eps1  - xl8    : 2.31  (at 1.0: not, at 1.5: not, at 2.0: not)
+
+== P4  Bonferroni over the five equivalence tests of each study: 98 % CI, margin 2 pp ==
+v0.3 E1  eld       d1_16        - xl16   : +0.06 [-0.57, +0.73]  EQUIVALENT  (pre-registered: EQUIVALENT)
+v0.3 E1  eld       d4_P8_eps1   - xl16   : +0.63 [-1.08, +2.54]  NOT_EQUIVALENT  (pre-registered: EQUIVALENT)
+v0.3 E1  eld       d4_P8_eps1   - d1_16  : +0.56 [-1.04, +2.35]  NOT_EQUIVALENT  (pre-registered: EQUIVALENT)
+v0.3 E1  lifesnaps d1_4         - xl8    : -0.40 [-1.52, +0.70]  EQUIVALENT  (pre-registered: EQUIVALENT)
+v0.3 E1  lifesnaps d4_P8_eps1   - xl8    : +2.02 [-0.67, +4.08]  NOT_EQUIVALENT  (pre-registered: NOT_EQUIVALENT)
+v0.4 E1c eld       d1p_16       - xl16   : +0.21 [-0.33, +0.73]  EQUIVALENT  (pre-registered: EQUIVALENT)
+v0.4 E1c eld       d4_P8_eps1   - xl16   : -1.40 [-2.61, -0.02]  NOT_EQUIVALENT  (pre-registered: NOT_EQUIVALENT)
+v0.4 E1c eld       d4_P8_eps1   - d1p_16 : -1.61 [-2.90, -0.17]  NOT_EQUIVALENT  (pre-registered: NOT_EQUIVALENT)
+v0.4 E1c lifesnaps d1p_4        - xl8    : -0.74 [-1.95, +0.08]  EQUIVALENT  (pre-registered: EQUIVALENT)
+v0.4 E1c lifesnaps d4p_P8_eps1  - xl8    : -0.42 [-3.13, +1.19]  NOT_EQUIVALENT  (pre-registered: NOT_EQUIVALENT)

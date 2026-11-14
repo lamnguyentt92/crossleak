@@ -89,6 +89,13 @@ Format: ID — date — decision — reason.
   equivalence did not replicate and the D4 claim is narrowed to "keeps most of the gain; −2.34 to +1.97 pp across the
   two campaigns"; E1c-4/5 reported with the caveat of few users (6 LifeSnaps users). The v0.3 verdicts remain reported.
   Independent re-analysis agrees (docs/reanalysis/v4_reanalysis_v0.4.0.*). No post hoc analysis on the v0.4 data.
+- **D-035** — 2026-11-14 — A further pre-submission review asked for (1) seasonal naive on the causal-study targets,
+  (2) the sensitivity of the D4 result to the sample, (3) narrower equivalence margins and (4) simultaneous intervals.
+  These were run post hoc on the deposited bundles (docs/reanalysis/posthoc_r2.*, summary in docs/V4_RESULTS.md).
+  Not run: replication of the k = 256 attack with other attacker-training seeds, an end-to-end timing run for 1,000
+  users and a service-level test of batch placement; the paper states the k = 256 result as conditional on holding 255
+  of the 256 slots, the cost as an estimate from measured median times, and these limits. Data deposit:
+  doi:10.5281/zenodo.24224346.
 
 ## Deviations log
 - 2026-11-14, before any v0.4 data — erratum to prereg/V4_PREREG.md section 2 (the frozen file is left unchanged): it
