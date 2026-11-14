@@ -52,6 +52,21 @@ Format: ID — date — decision — reason.
   over users it can access (aux and public pools); test labels use all users. Without this, LifeSnaps training labels
   (no time split) would depend on victim-pool data of the same days. The report also refuses to mix results produced
   under another configuration (CONFIG_MISMATCH). Main plan frozen at 2026-11-13T16:59Z (`prereg/MAIN_FREEZE.sha256`).
+- **D-025** — 2026-11-14 — A v0.3 confirmatory study before publishing the final dataset, with three goals:
+  (1) equivalence of D1 and D4(eps=1) to cross-learning (TOST, margin 2 pp, 600 targets); (2) a stronger sybil attacker
+  (residual features, larger training sets) at k in {16,64,256} to confirm the v0.2 CL5 = NO is not an artefact of a weak
+  attacker; (3) a real-system check through AutoGluon.
+- **D-026** — 2026-11-14 — v0.3 reuses the frozen main driver and main analysis unchanged (no edit to any MAIN_FREEZE
+  file; verified intact), adds only analysis/v3_report.py and configs/v3.yaml; the `v3` driver routes through the main
+  runners. The frozen driver always emits ref/dpaudit/invariance/cost cells, so v0.3 sizes dpaudit/invariance down and
+  sets cost models empty rather than editing the driver. — Keeps v0.2 reproducible.
+- **D-027** — 2026-11-14 — The AutoGluon real-system check runs off-cluster (separate venv; scripts/agcheck*.{py,sh}),
+  not in the overnight campaign (`agcheck.run_on_cluster: false`), because autogluon.timeseries is a heavy dependency
+  that could break the pinned chronos-forecasting environment on the testbed. Results on real ELD data are in
+  docs/AGCHECK.md: cross_learning=True is the shipped default, the library accepts short and duplicate series, and the
+  channel reproduces (residual AUC 0.74 vs 0.47 control at k=2, diluting with k).
+- **D-028** — 2026-11-14 — v0.3 main plan frozen (prereg/V3_FREEZE.sha256) before any v0.3 data; it also lists the v0.2
+  MAIN_FREEZE hashes so one check covers the whole analysis path.
 
 ## Deviations log
 None so far.

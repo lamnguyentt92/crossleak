@@ -1,0 +1,47 @@
+== utility (c2base) ==
+eld ell=24 xl4          gain +0.0896 [+0.0712, +0.1074]  n=300 users=49
+eld ell=24 xl16         gain +0.1067 [+0.0830, +0.1290]  n=300 users=49
+eld ell=24 xl64         gain +0.1117 [+0.0863, +0.1361]  n=300 users=49
+eld ell=24 d1_16        gain +0.1083 [+0.0841, +0.1315]  n=300 users=49
+eld ell=24 d1_4         gain +0.0924 [+0.0741, +0.1094]  n=300 users=49
+eld ell=24 d4_P8_eps1   gain +0.1115 [+0.0870, +0.1335]  n=300 users=49
+eld ell=24 d4_P8_eps4   gain +0.1165 [+0.0918, +0.1387]  n=300 users=49
+eld ell=24 d4_P4_eps1   gain +0.1093 [+0.0875, +0.1298]  n=300 users=49
+   paired gain difference d4_P8_eps1 - d1_16: +0.0032 [-0.0052, +0.0127]
+   paired gain difference d4_P8_eps1 - xl16: +0.0049 [-0.0037, +0.0148]
+   paired gain difference d1_16 - xl16: +0.0017 [-0.0050, +0.0085]
+   paired gain difference d4_P8_eps4 - d1_16: +0.0081 [-0.0005, +0.0178]
+eld ell=72 xl4          gain -0.0135 [-0.0558, +0.0227]  n=300 users=49
+eld ell=72 xl16         gain -0.0033 [-0.0440, +0.0315]  n=300 users=49
+lifesnaps ell=24 xl4          gain +0.0142 [+0.0022, +0.0238]  n=300 users=13
+lifesnaps ell=24 xl8          gain +0.0254 [+0.0077, +0.0417]  n=300 users=13
+lifesnaps ell=24 d1_4         gain +0.0171 [+0.0052, +0.0284]  n=300 users=13
+lifesnaps ell=24 d4_P8_eps1   gain +0.0237 [-0.0081, +0.0530]  n=300 users=13
+lifesnaps ell=24 d4_P8_eps4   gain +0.0244 [-0.0083, +0.0547]  n=300 users=13
+lifesnaps ell=24 d4_P4_eps1   gain +0.0195 [-0.0094, +0.0466]  n=300 users=13
+   paired gain difference d4_P8_eps1 - d1_4: +0.0067 [-0.0175, +0.0326]
+   paired gain difference d4_P8_eps1 - xl8: -0.0017 [-0.0322, +0.0293]
+   paired gain difference d1_4 - xl8: -0.0084 [-0.0220, +0.0026]
+   paired gain difference d4_P8_eps4 - d1_4: +0.0073 [-0.0183, +0.0353]
+lifesnaps ell=72 xl4          gain +0.0208 [+0.0088, +0.0340]  n=300 users=13
+lifesnaps ell=72 xl8          gain +0.0266 [+0.0140, +0.0446]  n=300 users=13
+
+== attacks (own labels from raw data, own decoders) ==
+eld       c2base single none  k=  2: AUC L1 0.719 [0.671, 0.762] ctrl 0.533 dAUC +0.186 [+0.133, +0.235] | dr1 +0.177 [+0.137, +0.219] | label agreement with pipeline 1.000 | C 10/0.01 n_tr 2000 n_te 600
+lifesnaps c2base single none  k=  2: AUC L1 0.711 [0.670, 0.753] ctrl 0.505 dAUC +0.206 [+0.155, +0.263] | dr1 +0.221 [+0.189, +0.268] | label agreement with pipeline 0.955 | C 10/10 n_tr 2000 n_te 600
+eld       c2small single none  k=  2: AUC L1 0.814 [0.769, 0.856] ctrl 0.522 dAUC +0.291 [+0.236, +0.341] | dr1 +0.404 [+0.343, +0.463] | label agreement with pipeline 1.000 | C 1/0.01 n_tr 2000 n_te 600
+eld       c2base sybil  copy  k= 16: AUC L1 0.671 [0.623, 0.717] ctrl 0.491 dAUC +0.180 [+0.139, +0.222] | dr1 +0.007 [+0.003, +0.011] | label agreement with pipeline 1.000 | C 10/1 n_tr 1500 n_te 600
+lifesnaps c2base sybil  copy  k= 16: AUC L1 0.646 [0.577, 0.701] ctrl 0.527 dAUC +0.119 [+0.066, +0.158] | dr1 +0.123 [+0.088, +0.151] | label agreement with pipeline 0.958 | C 10/10 n_tr 1500 n_te 600
+eld       c2small sybil  copy  k= 64: AUC L1 0.582 [0.535, 0.631] ctrl 0.509 dAUC +0.074 [+0.035, +0.107] | dr1 +0.010 [-0.012, +0.034] | label agreement with pipeline 1.000 | C 10/10 n_tr 1000 n_te 500
+eld       c2small sybil  copy  k=256: AUC L1 0.525 [0.472, 0.578] ctrl 0.422 dAUC +0.102 [+0.063, +0.145] | dr1 +0.023 [-0.006, +0.052] | label agreement with pipeline 1.000 | C 10/10 n_tr 800 n_te 400
+lifesnaps c2small sybil  copy  k=256: AUC L1 0.532 [0.487, 0.573] ctrl 0.525 dAUC +0.007 [-0.023, +0.025] | dr1 +0.026 [-0.003, +0.047] | label agreement with pipeline 0.950 | C 10/10 n_tr 800 n_te 400
+
+== channel ratios (own medians, independent bootstrap) ==
+eld c2small single k=256: ratio 0.010 [0.007, 0.013] (pairs 40)
+eld c2small sybil k=256: ratio 0.273 [0.166, 0.359] (pairs 40)
+eld c2base single k=256: ratio 0.013 [0.009, 0.017] (pairs 40)
+eld c2base sybil k=256: ratio 0.073 [0.048, 0.154] (pairs 40)
+lifesnaps c2small single k=8: ratio 0.314 [0.270, 0.359] (pairs 200)
+lifesnaps c2small sybil k=256: ratio 0.219 [0.172, 0.318] (pairs 40)
+lifesnaps c2base single k=8: ratio 0.409 [0.364, 0.450] (pairs 200)
+lifesnaps c2base sybil k=256: ratio 0.121 [0.090, 0.173] (pairs 40)

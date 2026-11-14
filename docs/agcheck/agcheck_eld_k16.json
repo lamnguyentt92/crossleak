@@ -1,0 +1,20 @@
+{
+  "dataset": "eld",
+  "model_path": "autogluon/chronos-2",
+  "k": 16,
+  "n_train": 250,
+  "n_test": 150,
+  "library": "autogluon.timeseries",
+  "default_hyperparameters": {
+    "cross_learning": true,
+    "batch_size": 16,
+    "context_length": null
+  },
+  "accepts_short_probe_24h": true,
+  "accepts_duplicate_series": true,
+  "auc_L1_group": 0.4385997067448681,
+  "auc_L1_iso_control": 0.5769794721407625,
+  "auc_L1_residual": 0.5225439882697946,
+  "channel_mean_abs_probe_change_victim_swap": 0.015049988403916359,
+  "probe_feature_scale": 0.9407088160514832
+}

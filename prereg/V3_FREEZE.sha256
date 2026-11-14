@@ -1,0 +1,19 @@
+# v0.3 confirmatory freeze, CrossLeak v0.3.0, 2026-11-14T04:03Z, before any v0.3 data.
+# New v0.3 files:
+4e846026a3904aef9a57ad71676d4ebafc453fc68ffca88101f2524acdcdabef  prereg/V3_PREREG.md
+8539d25804aa1300521d360dd62a69aaa9b37bf6b1a87addbcc17f5f2711b42f  configs/v3.yaml
+7cd5f19389c2bb1b9cfb405cf0a7fbb59e14c5a54a15537ec3463fecf63f5470  src/crossleak/analysis/v3_report.py
+323d0a584dc0dce9436eed5dd99a83c6cda47776e4957b115cd10fba4f90ebd8  scripts/agcheck.py
+faeafb71595f0191127f99fe02399be2aa335a444b8e496764bacaf40b266efe  scripts/agcheck_dump.py
+# Reused from MAIN_FREEZE (v0.2 hashes, unchanged):
+7f9b098b35d1d90208921c4796a7ab765e4321a386f22b6544c0c04341a01399  prereg/MAIN_PREREG.md
+dde384e962a0511c295a77e5cba4f753eab1e3db344d6672a0fd52de5bf95570  configs/main.yaml
+e3009fe6498ee901b357ecfeb072a3af47cb2644a8642b7a7d15618250d72f67  src/crossleak/experiments/main.py
+0954eeaa1a56cacb7996528e1869ac9a223f64362f9f323cbea2f80d1dac6dc4  src/crossleak/analysis/main_report.py
+b4e6b3016c3ce3bc3db9bdeaf211695c92899e5b4dcad839a6fe87f67d7c2b10  src/crossleak/attack.py
+c369ec76d4723d185e256d524f9a2b8cd970d744da58837dc99b6c48672d86b0  src/crossleak/defenses/dp_prototype.py
+aebbfe8aaecbac0e482317012e7b71a42a5915a35eb18a98e8db6d59d86a7c2a  src/crossleak/decode.py
+e4cdcdca3bbacfef7c76d453d7241ec3bdafcd705e0f19a405a26a426a4981b0  src/crossleak/metrics.py
+caff5747dba2ec8f54b0473bdb751c440706de92bda4d5b403211731d53c7550  src/crossleak/model.py
+fc1cff0883f8c445f04c2d8d46b3a1cecfcbd9b45ac0d6b4fe7e937bd5315a7d  src/crossleak/data/panel.py
+04e173ce748aa6fda68c855f6632119fe304631ba486b254ae777f69ca16671e  src/crossleak/data/prepare.py

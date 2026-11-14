@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.3.0
+Confirmatory study: equivalence of D1 and D4 to cross-learning (TOST), stronger sybil attacker (residual features, larger training sets), real-system check through AutoGluon (`scripts/agcheck*`); the frozen main driver and analysis are reused unchanged; plan frozen by `prereg/V3_FREEZE.sha256`.
+
 ## v0.2.0
 Main study: sybil attackers (copy, sparse, noise fillers; half sybils), non-linear decoders, linkage (A1), within-day labels, DP-Prototype defence (D4) with its zCDP accountant, edge-cost phase on one machine, live dashboard; plan frozen by `prereg/MAIN_FREEZE.sha256`.
 

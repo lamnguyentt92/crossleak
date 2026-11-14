@@ -174,11 +174,20 @@ def main() -> int:
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--out", default=None, help="controller console file (default ~/crossleak-v<version>-cluster.out)")
     a = ap.parse_args()
-    config = a.config or ("configs/main.yaml" if Path("configs/main.yaml").exists() else "configs/e0.yaml")
-    if a.smoke and not config.endswith("_smoke.yaml"):
-        config = config.replace(".yaml", "_smoke.yaml")
     import yaml
 
+    if a.config:
+        config = a.config
+    else:
+        # auto-detect the running experiment from the newest plan file under ./runs (cwd is crossleak-v<version>)
+        plans = sorted(glob.glob(os.path.join("runs", "*", "plan_*shard*.json")), key=os.path.getmtime)
+        if plans:
+            exp_detected = os.path.basename(os.path.dirname(plans[-1]))
+            config = f"configs/{exp_detected}.yaml"
+        else:
+            config = "configs/main.yaml" if Path("configs/main.yaml").exists() else "configs/e0.yaml"
+    if a.smoke and not config.endswith("_smoke.yaml"):
+        config = config.replace(".yaml", "_smoke.yaml")
     exp = yaml.safe_load(open(config))["experiment"]
     cost, spu_default = costs(config)
     out_file = Path(a.out or Path.home() / f"crossleak-v{a.version}-cluster.out")

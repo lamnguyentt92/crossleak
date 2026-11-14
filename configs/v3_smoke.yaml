@@ -1,0 +1,99 @@
+# SMOKE TEST of the v0.3 study: same structure, tiny sizes. Not frozen; its numbers mean nothing.
+# Reuses the frozen main driver (src/crossleak/experiments/main.py) unchanged; a fresh seed means no sample repeats a
+# v0.2 sample. Three goals: (1) equivalence of the defences D1 / D4(eps=1) and cross-learning (margin 2 pp); (2) a
+# stronger sybil attacker at k in {16,64,256} with more training groups and residual features (analysis/v3_report.py);
+# (3) the real-system check through AutoGluon (scripts/agcheck.py, run off-cluster; see docs/AGCHECK.md).
+experiment: v3_smoke
+driver: v3
+seed: 20261115          # fresh: no sample repeats v0.2 (seed 20261114) or E0 (20261112)
+pool_seed: 20261112     # same user pools as E0 / v0.2
+horizon: 24
+context_length: 336
+probe_short_len: 24
+bootstrap: 50
+delta: 1.0e-5
+part_budget_sec: 25
+cost_per_series:
+  c2small: 0.03
+  c2base: 0.15
+
+models:
+  c2small: autogluon/chronos-2-small
+  c2base: amazon/chronos-2
+
+pools: {victim: 0.5, aux: 0.35, public: 0.15}
+
+datasets:
+  eld:
+    train_days: ["2013-01-15", "2013-12-20"]
+    test_days: ["2014-01-15", "2014-12-20"]
+    exclude_days: ["2013-03-31", "2013-04-01", "2013-10-27", "2013-10-28", "2014-03-30", "2014-03-31", "2014-10-26", "2014-10-27"]
+    target_frac: 0.3
+  lifesnaps:
+    train_days: null
+    test_days: null
+    exclude_days: []
+    target_frac: 0.5
+
+d4:
+  representation: dayfold
+  P: [8]
+  P_primary: 8
+  eps: [1, 4]
+  sum_share: 0.9
+  centre_days: 10
+
+d1:
+  min_gap_days: 56
+
+# Utility with 600 targets for the equivalence tests (half the CI width of v0.2's 300).
+utility:
+  - {dataset: eld, models: [c2base, c2small], ell: 24, n_targets: 8, xl_k: [4, 16], d1_k: [16], d4: true}
+  - {dataset: eld, models: [c2base], ell: 72, n_targets: 8, xl_k: [4, 16], d1_k: [], d4: false}
+  - {dataset: lifesnaps, models: [c2base, c2small], ell: 24, n_targets: 8, xl_k: [4, 8], d1_k: [4], d4: true}
+  - {dataset: lifesnaps, models: [c2base], ell: 72, n_targets: 8, xl_k: [4, 8], d1_k: [], d4: false}
+xl_ref: {eld: 16, lifesnaps: 8}
+
+# Equivalence rules (prereg/V3_PREREG.md section 4). TOST on the paired gain difference: 90% CI within +/- margin.
+equivalence:
+  margin: 0.02
+  model: c2base
+  pairs:
+    - {dataset: eld, ell: 24, a: d1_16, b: xl16}
+    - {dataset: eld, ell: 24, a: d4_P8_eps1, b: xl16}
+    - {dataset: eld, ell: 24, a: d4_P8_eps1, b: d1_16}
+    - {dataset: lifesnaps, ell: 24, a: d1_4, b: xl8}
+    - {dataset: lifesnaps, ell: 24, a: d4_P8_eps1, b: xl8}
+  no_benefit:          # equivalence of the cross-learning gain to 0 at 3 days of history
+    - {dataset: eld, ell: 72, config: xl16}
+    - {dataset: eld, ell: 72, config: xl4}
+
+# Stronger sybil attacker: more training groups than v0.2, residual features (fxl - fiso) reported alongside linear.
+attack:
+  sizes: {2: [40, 30], 16: [30, 20], 64: [12, 8], 256: [6, 6]}
+  residual: true
+  families:
+    - {fam: single, datasets: [eld, lifesnaps], models: [c2base, c2small], k: [2], probes: [short]}
+    - {fam: sybil, filler: copy, datasets: [eld], models: [c2small, c2base], k: [16], probes: [short]}
+    - {fam: sybil, filler: copy, datasets: [eld], models: [c2small], k: [64, 256], probes: [short]}
+    - {fam: sybil, filler: copy, datasets: [lifesnaps], models: [c2small], k: [16, 64, 256], probes: [short]}
+
+channel:
+  n_pairs: {2: 6, 256: 4}
+  families:
+    - {fam: single, datasets: [eld, lifesnaps], models: [c2small, c2base], k: [2], probes: [short]}
+    - {fam: single, datasets: [eld], models: [c2small, c2base], k: [256], probes: [short]}
+    - {fam: sybil, filler: copy, datasets: [eld], models: [c2small, c2base], k: [256], probes: [short]}
+
+# Reused but not re-claimed (CL2 and the DP audit were settled in v0.2); kept small as a sanity check. The frozen
+# main driver always emits ref, dpaudit and (if listed) cost and invariance cells, so they are sized down here.
+invariance: {k: 4, n: 2, models: [c2base], datasets: [eld]}
+dpaudit: {n_train: 200, n_test: 200}
+cost: {models: [], xl_k: [], d4_P: [8], batch_users: 64, repeats: 3, threads: 4}
+
+# AutoGluon real-system check: authoritative results are produced off-cluster (docs/AGCHECK.md); do not run in the
+# sharded campaign (needs a separate venv with autogluon.timeseries). run_on_cluster stays false for the overnight run.
+agcheck:
+  run_on_cluster: false
+  datasets: [eld]
+  k: [2, 16]

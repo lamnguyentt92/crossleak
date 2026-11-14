@@ -110,7 +110,10 @@ def _cmd_main(a) -> int:
         import zipfile
         from pathlib import Path
 
-        from crossleak.analysis.main_report import build_report
+        if cfg.get("driver") == "v3":
+            from crossleak.analysis.v3_report import build_report
+        else:
+            from crossleak.analysis.main_report import build_report
 
         roots = [Path(r) for r in a.roots] if a.roots else [runs_dir() / cfg["experiment"]]
         tmp = None

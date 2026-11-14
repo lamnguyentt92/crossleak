@@ -9,8 +9,11 @@ def driver_name(cfg: dict) -> str:
     return str(cfg.get("driver", "e0"))
 
 
+MAIN_DRIVERS = ("main", "v3")  # v3 reuses the frozen main driver's cells and runners; only its report differs
+
+
 def build_cells(cfg: dict):
-    if driver_name(cfg) == "main":
+    if driver_name(cfg) in MAIN_DRIVERS:
         from crossleak.experiments.main import build_cells as b
     else:
         from crossleak.experiments.e0 import build_cells as b
@@ -18,7 +21,7 @@ def build_cells(cfg: dict):
 
 
 def assign_shards(cells, cfg: dict, nshards: int) -> dict:
-    if driver_name(cfg) == "main":
+    if driver_name(cfg) in MAIN_DRIVERS:
         from crossleak.experiments.main import assign_shards as a
     else:
         from crossleak.experiments.e0 import assign_shards as a
@@ -26,7 +29,7 @@ def assign_shards(cells, cfg: dict, nshards: int) -> dict:
 
 
 def has_cost_phase(cfg: dict) -> bool:
-    return driver_name(cfg) == "main" and any(c.exp == "cost" for c in build_cells(cfg))
+    return driver_name(cfg) in MAIN_DRIVERS and any(c.exp == "cost" for c in build_cells(cfg))
 
 
 def planned_per_shard(cfg: dict, n: int) -> dict[int, int]:
@@ -49,6 +52,11 @@ def merged_report(roots: list[Path], cfg: dict, out_dir: Path, decoders: str = "
     import json
     import os
 
+    if driver_name(cfg) == "v3":
+        from crossleak.analysis.v3_report import build_report
+
+        path = build_report(roots, cfg, decoders=decoders, n_jobs=n_jobs, out_dir=out_dir)
+        return path, json.loads((out_dir / "v3_summary.json").read_text())["verdicts"]["overall"]
     if driver_name(cfg) == "main":
         from crossleak.analysis.main_report import build_report
 

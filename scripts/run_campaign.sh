@@ -35,7 +35,7 @@ if ! crossleak data all; then
 fi
 EXTRA=()
 if [ -n "${BUDGET}" ]; then EXTRA=(--budget-min "${BUDGET}"); fi
-if [ "${DRIVER}" = "main" ]; then
+if [ "${DRIVER}" = "main" ] || [ "${DRIVER}" = "v3" ]; then
   crossleak main run --config "${CONFIG}" --shard "${SHARD}" --nshards "${NSHARDS}" --phase "${PHASE}" "${EXTRA[@]}"
   RC=$?
   crossleak main status --config "${CONFIG}" --shard "${SHARD}" --nshards "${NSHARDS}" --phase "${PHASE}"
