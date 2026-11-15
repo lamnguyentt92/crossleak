@@ -1,0 +1,115 @@
+# SMOKE TEST of the v0.5 study (tiny sizes; not frozen; its numbers mean nothing). v0.5 study (CrossLeak): evidence requested in the manuscript review (round r3). Frozen by prereg/V5_FREEZE.sha256 with
+# prereg/V5_PREREG.md. Reuses the frozen main driver (src/crossleak/experiments/main.py, source unchanged) through
+# experiments/v5.py: E5a public-context ablation, E5b end-to-end serving run, E5c sybil attack over independent
+# realisations (k = 256 and 32), E5d half sybils at k = 256 and a placement emulation.
+experiment: v5_smoke
+driver: v5
+seed: 20261117          # fresh: no sample repeats E0 (20261112), v0.2 (20261114), v0.3 (20261115) or v0.4 (20261116)
+pool_seed: 20261112     # same user pools as E0 / v0.2 / v0.3 / v0.4
+horizon: 24
+context_length: 336
+probe_short_len: 24
+bootstrap: 50
+delta: 1.0e-5
+part_budget_sec: 60
+cost_per_series:        # planning only; measured in v0.3 (seconds per forecast series on one busy machine)
+  c2small: 0.05
+  c2base: 0.2
+
+models:
+  c2small: autogluon/chronos-2-small
+  c2base: amazon/chronos-2
+
+pools: {victim: 0.5, aux: 0.35, public: 0.15}
+
+datasets:
+  eld:
+    train_days: ["2013-01-15", "2013-12-20"]
+    test_days: ["2014-01-15", "2014-12-20"]
+    exclude_days: ["2013-03-31", "2013-04-01", "2013-10-27", "2013-10-28", "2014-03-30", "2014-03-31", "2014-10-26", "2014-10-27"]
+    target_frac: 0.3
+  lifesnaps:
+    train_days: null
+    test_days: null
+    exclude_days: []
+    target_frac: 0.5
+
+d4:
+  representation: dayfold
+  P: [8]
+  P_primary: 8
+  eps: [1]
+  sum_share: 0.9
+  centre_days: 40
+
+d1:
+  min_gap_days: 56
+
+# E5a: public-context ablation, base model, one day of history, 600 targets per dataset (as v0.3 / v0.4).
+#   d1p same weekday, past; d1x other weekday, past; d1r any weekday, past; d1o other dataset's public users.
+utility:
+  - {dataset: eld, models: [c2base], ell: 24, n_targets: 6, xl_k: [16], d1_k: [16], arms: [d1p, d1x, d1r, d1o]}
+  - {dataset: lifesnaps, models: [c2base], ell: 24, n_targets: 6, xl_k: [4], d1_k: [4], arms: [d1p, d1x, d1r, d1o]}
+
+# Rules of prereg/V5_PREREG.md section 3 (paired gain differences, 90 % CI, user clusters).
+ablation:
+  model: c2base
+  margin: 0.01
+  contrasts:
+    - {id: A1, dataset: eld, ell: 24, a: d1p_16, b: d1x_16}
+    - {id: A2, dataset: eld, ell: 24, a: d1p_16, b: d1r_16}
+    - {id: A3, dataset: eld, ell: 24, a: d1p_16, b: d1o_16}
+    - {id: A5, dataset: eld, ell: 24, a: d1p_16, b: xl16}
+    - {id: A1L, dataset: lifesnaps, ell: 24, a: d1p_4, b: d1x_4}
+    - {id: A2L, dataset: lifesnaps, ell: 24, a: d1p_4, b: d1r_4}
+    - {id: A3L, dataset: lifesnaps, ell: 24, a: d1p_4, b: d1o_4}
+    - {id: A5L, dataset: lifesnaps, ell: 24, a: d1p_4, b: xl4}
+  gains:                 # A4: does unrelated context alone help? (gain over isolated forecasting, 90 % CI)
+    - {id: A4, dataset: eld, ell: 24, config: d1o_16}
+    - {id: A4L, dataset: lifesnaps, ell: 24, config: d1o_4}
+
+# E5c / E5d: the confirmatory study's stronger sybil attacker (residual features, linear decoders), same sizes as v0.3
+# S1 at k = 256; each realisation (rep) draws its own training and test groups.
+attack:
+  sizes: {32: [16, 8], 256: [6, 4]}
+  residual: true
+  families:
+    - {fam: sybil, filler: copy, datasets: [eld], models: [c2small], k: [256], reps: [1, 2]}
+    - {fam: sybil, filler: copy, datasets: [eld], models: [c2small], k: [32], reps: [1, 2]}
+    - {fam: half, filler: copy, datasets: [eld], models: [c2small], k: [256], reps: [1]}
+
+# E5d: placement emulation (no model).
+placement:
+  run: true
+  block: 256
+  policies: [ordered, informed, informed_pad, hashed]
+  N0: [1000]
+  lam: [10]
+  m: [16, 255]
+  days: 30
+  reps: 3
+  service_N_est: [1000]
+  service_k: [16]
+
+# E5b: end-to-end nightly serving run for 1,000 new clients on one idle machine (phase "cost", shard 0).
+serve:
+  models: [c2base]
+  dataset: eld
+  n_clients: 20
+  ell: 24
+  k: 16
+  P: 8
+  eps: 1
+  threads: 4
+  series_per_call: 256
+  ridge_train: 500
+  modes: [snaive, ridge, d0, d4, d1p, xl]
+  est_sec: 300
+
+# Read by the frozen main machinery; not used by v0.5 cells.
+channel: {n_pairs: {2: 10}, families: []}
+invariance: {k: 4, n: 1, models: [], datasets: []}
+dpaudit: {n_train: 10, n_test: 10}
+cost: {models: [], xl_k: [4], d4_P: [8], batch_users: 4, repeats: 1, threads: 4}
+xl_ref: {eld: 16, lifesnaps: 4}
+agcheck: {run_on_cluster: false}

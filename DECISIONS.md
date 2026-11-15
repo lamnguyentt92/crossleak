@@ -97,6 +97,21 @@ Format: ID — date — decision — reason.
   of the 256 slots, the cost as an estimate from measured median times, and these limits. Data deposit:
   doi:10.5281/zenodo.24224346.
 
+## v0.5 study (2026-11-15)
+- **D-036** — The author approved, after the round-r3 review of the manuscript, the work needed for the numbers it
+  asks for: four post hoc analyses on the deposited bundles (pooled D4 comparison with unique-user clusters; a ridge
+  baseline; a point-forecast-only attacker; exact Gaussian audit ceilings) and the v0.5 study (`prereg/V5_PREREG.md`).
+- **D-037** — Before the freeze, the v0.5 code was reviewed independently and re-checked after the fixes: the E5c rule
+  counts the five *planned* realisations (a missing one is not positive; NO_DATA verdicts; PARTIAL); the informed
+  placement attacker pads once to a block boundary and then uses min(255, remaining budget) meters per victim; E5a
+  labels *_SMALL and their reading; E5b timing and memory definitions; two victim populations in the placement
+  emulation; `attack.py`, `decode.py`, `config.py` and `v4.py` added to the frozen list. `registry.py` changed after the
+  v0.4 freeze only to dispatch the v5 driver; its V4 hash is superseded and the v0.4 results are unaffected. The ridge
+  baseline uses distinct training windows, a user-disjoint held-out quarter, five training seeds and, on LifeSnaps,
+  only windows before each origin; earlier runs with windows drawn with replacement are superseded and not used.
+  The placement emulation reports two informed attackers: one that waits for an honest registration to open a block
+  and one that first pads to a block boundary; the plan was re-frozen before any v0.5 data.
+
 ## Deviations log
 - 2026-11-14, before any v0.4 data — erratum to prereg/V4_PREREG.md section 2 (the frozen file is left unchanged): it
   says v0.4 uses "the same user pools ... and the same cold-start users". The pools (victim/aux/public, pool seed

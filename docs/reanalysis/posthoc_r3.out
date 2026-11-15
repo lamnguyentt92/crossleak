@@ -1,0 +1,93 @@
+== PH-A  ELD, D4 (eps = 1) - XL16, both studies, 90 % CI, points ==
+targets 1200, unique users 80 (18 in both studies)
+(i)  pooled ratio of means, clusters = unique user:      -0.46 [-1.30, +0.41]
+(ii) mean of study-specific differences, unique user:     -0.39 [-1.22, +0.51]
+(r2) pooled, clusters = study x user (as posthoc_r2 P2b): -0.46 [-1.25, +0.38]
+
+== PH-D  DP audit ceilings: (eps, delta) bound vs exact Gaussian (mu-GDP) ==
+eps=0.5: sigma_s=10.225  mu=0.196  exact Gaussian AUC ceiling 0.555  (eps,delta) bound 0.731
+eps=1.0: sigma_s=5.166  mu=0.387  exact Gaussian AUC ceiling 0.608  (eps,delta) bound 0.881
+eps=4.0: sigma_s=1.366  mu=1.464  exact Gaussian AUC ceiling 0.850  (eps,delta) bound 1.000
+
+== PH-B  global ridge baseline on the stored cold-start targets (one day of history), 95 % CI, points ==
+-- v3 eld [train split (2013)]: 600 targets, 49 users; 54749 distinct training windows of 163 users, 1 fit(s), scaling ['meanstd']; ridge gain over seeds [11, 12, 13, 14, 15]: -10.58, +4.09, -6.76, -0.21, -14.56; snaive alignment max |diff| 0.00e+00
+    gain vs isolated Chronos-2: ridge        -10.58 [-21.36, -1.82]
+    gain vs isolated Chronos-2: snaive       +14.56 [+6.85, +23.59]   minus ridge +25.14 [+12.84, +39.64]
+    gain vs isolated Chronos-2: xl4          +8.19 [+6.11, +10.60]   minus ridge +18.77 [+9.75, +30.24]
+    gain vs isolated Chronos-2: xl16         +9.65 [+7.29, +12.49]   minus ridge +20.23 [+11.34, +31.53]
+    gain vs isolated Chronos-2: d1_16        +9.72 [+7.36, +12.45]   minus ridge +20.30 [+11.23, +31.87]
+    gain vs isolated Chronos-2: d4_P8_eps1   +10.28 [+7.48, +13.60]   minus ridge +20.86 [+11.47, +32.63]
+    gain vs isolated Chronos-2: d4_P8_eps4   +11.39 [+8.40, +14.84]   minus ridge +21.97 [+12.37, +33.92]
+    xl4 - ridge by seed: +18.77 [+9.75, +30.24]; +4.10 [-1.53, +10.64]; +14.95 [+7.42, +25.18]; +8.40 [+1.85, +17.09]; +22.75 [+12.14, +36.82]
+    xl16 - ridge by seed: +20.23 [+11.34, +31.53]; +5.56 [+0.25, +11.78]; +16.41 [+8.73, +26.41]; +9.87 [+3.41, +18.45]; +24.21 [+13.58, +37.99]
+-- v3 lifesnaps [windows before each origin]: 507 targets, 13 users; 371 distinct training windows of 17 users, 100 fit(s), scaling ['meanabs', 'meanstd']; ridge gain over seeds [11, 12, 13, 14, 15]: +5.86, +1.81, +7.54, +5.65, +2.54; snaive alignment max |diff| 0.00e+00
+    gain vs isolated Chronos-2: ridge        +5.86 [+1.24, +10.00]
+    gain vs isolated Chronos-2: snaive       -26.10 [-34.88, -17.21]   minus ridge -31.97 [-40.64, -22.83]
+    gain vs isolated Chronos-2: xl4          +0.91 [+0.25, +1.77]   minus ridge -4.95 [-9.10, -0.22]
+    gain vs isolated Chronos-2: xl8          +1.29 [+0.16, +2.67]   minus ridge -4.58 [-9.18, +0.32]
+    gain vs isolated Chronos-2: d1_4         +1.02 [+0.32, +1.93]   minus ridge -4.84 [-8.97, -0.25]
+    gain vs isolated Chronos-2: d4_P8_eps1   +3.37 [+1.28, +5.32]   minus ridge -2.50 [-6.71, +1.88]
+    gain vs isolated Chronos-2: d4_P8_eps4   +3.45 [+1.56, +5.32]   minus ridge -2.42 [-6.68, +2.12]
+    xl4 - ridge by seed: -4.95 [-9.10, -0.22]; -0.90 [-6.78, +4.89]; -6.63 [-11.90, -0.61]; -4.74 [-8.87, +0.09]; -1.62 [-6.69, +4.02]
+    xl8 - ridge by seed: -4.58 [-9.18, +0.32]; -0.52 [-6.77, +5.74]; -6.25 [-11.92, +0.14]; -4.36 [-8.86, +0.66]; -1.25 [-6.61, +4.71]
+-- v3 lifesnaps [all days]: 528 targets, 13 users; 741 distinct training windows of 26 users, 1 fit(s), scaling ['meanabs']; ridge gain over seeds [11, 12, 13, 14, 15]: +10.92, +8.22, +10.45, +11.24, +4.24; snaive alignment max |diff| 0.00e+00
+    gain vs isolated Chronos-2: ridge        +10.92 [+7.27, +14.26]
+    gain vs isolated Chronos-2: snaive       -25.75 [-34.62, -17.03]   minus ridge -36.68 [-44.21, -29.05]
+    gain vs isolated Chronos-2: xl4          +0.91 [+0.27, +1.76]   minus ridge -10.01 [-13.61, -6.07]
+    gain vs isolated Chronos-2: xl8          +1.25 [+0.16, +2.64]   minus ridge -9.68 [-13.44, -5.69]
+    gain vs isolated Chronos-2: d1_4         +0.98 [+0.27, +1.91]   minus ridge -9.95 [-13.64, -5.90]
+    gain vs isolated Chronos-2: d4_P8_eps1   +3.33 [+1.24, +5.23]   minus ridge -7.60 [-10.80, -4.25]
+    gain vs isolated Chronos-2: d4_P8_eps4   +3.47 [+1.61, +5.27]   minus ridge -7.46 [-10.79, -4.03]
+    xl4 - ridge by seed: -10.01 [-13.61, -6.07]; -7.31 [-12.82, -0.79]; -9.54 [-14.99, -3.02]; -10.33 [-14.02, -5.89]; -3.33 [-7.12, +0.37]
+    xl8 - ridge by seed: -9.68 [-13.44, -5.69]; -6.97 [-12.66, -0.26]; -9.20 [-14.88, -2.51]; -10.00 [-13.53, -5.59]; -3.00 [-6.98, +1.02]
+-- v4 eld [train split (2013)]: 600 targets, 49 users; 54749 distinct training windows of 163 users, 1 fit(s), scaling ['meanstd']; ridge gain over seeds [11, 12, 13, 14, 15]: -20.78, +0.84, -12.03, -6.18, -27.66; snaive alignment max |diff| 0.00e+00
+    gain vs isolated Chronos-2: ridge        -20.78 [-33.51, -8.99]
+    gain vs isolated Chronos-2: snaive       +5.47 [-5.19, +15.71]   minus ridge +26.25 [+11.82, +43.05]
+    gain vs isolated Chronos-2: xl4          +6.41 [+4.02, +8.75]   minus ridge +27.19 [+15.42, +40.20]
+    gain vs isolated Chronos-2: xl16         +8.10 [+5.17, +10.98]   minus ridge +28.88 [+16.99, +42.04]
+    gain vs isolated Chronos-2: d1_16        +7.93 [+4.28, +11.29]   minus ridge +28.71 [+16.81, +42.11]
+    gain vs isolated Chronos-2: d1p_16       +8.30 [+5.48, +11.19]   minus ridge +29.08 [+17.08, +42.12]
+    gain vs isolated Chronos-2: d4_P8_eps1   +6.69 [+3.60, +9.82]   minus ridge +27.47 [+15.77, +40.64]
+    gain vs isolated Chronos-2: d4_P8_eps4   +7.37 [+3.99, +10.77]   minus ridge +28.15 [+16.33, +41.56]
+    xl4 - ridge by seed: +27.19 [+15.42, +40.20]; +5.57 [-0.54, +12.45]; +18.45 [+9.76, +28.33]; +12.59 [+4.97, +21.07]; +34.07 [+20.80, +49.06]
+    xl16 - ridge by seed: +28.88 [+16.99, +42.04]; +7.25 [+1.28, +13.98]; +20.13 [+11.56, +29.63]; +14.27 [+6.92, +22.78]; +35.76 [+22.42, +50.69]
+-- v4 lifesnaps [windows before each origin]: 546 targets, 6 users; 471 distinct training windows of 21 users, 64 fit(s), scaling ['meanabs', 'meanstd']; ridge gain over seeds [11, 12, 13, 14, 15]: +1.79, -1.78, -0.04, +1.30, -2.77; snaive alignment max |diff| 0.00e+00
+    gain vs isolated Chronos-2: ridge        +1.79 [-3.54, +7.43]
+    gain vs isolated Chronos-2: snaive       -34.17 [-49.10, -24.05]   minus ridge -35.96 [-48.89, -29.46]
+    gain vs isolated Chronos-2: xl4          +1.41 [-0.30, +3.65]   minus ridge -0.38 [-5.03, +4.23]
+    gain vs isolated Chronos-2: xl8          +2.26 [+0.13, +5.32]   minus ridge +0.47 [-3.26, +4.53]
+    gain vs isolated Chronos-2: d1_4         +1.60 [+0.19, +3.71]   minus ridge -0.19 [-4.52, +4.50]
+    gain vs isolated Chronos-2: d1p_4        +1.57 [+0.07, +3.66]   minus ridge -0.22 [-4.75, +4.52]
+    gain vs isolated Chronos-2: d4_P8_eps1   +2.17 [-0.03, +4.09]   minus ridge +0.38 [-4.48, +4.81]
+    gain vs isolated Chronos-2: d4_P8_eps4   +2.31 [+0.40, +4.29]   minus ridge +0.51 [-4.20, +4.78]
+    gain vs isolated Chronos-2: d4p_P8_eps1  +2.02 [+0.06, +4.00]   minus ridge +0.23 [-4.55, +4.63]
+    gain vs isolated Chronos-2: d4p_P8_eps4  +2.33 [+0.40, +4.25]   minus ridge +0.54 [-4.11, +4.84]
+    xl4 - ridge by seed: -0.38 [-5.03, +4.23]; +3.20 [-4.55, +14.80]; +1.46 [-5.21, +13.66]; +0.11 [-6.21, +7.56]; +4.19 [-4.45, +13.81]
+    xl8 - ridge by seed: +0.47 [-3.26, +4.53]; +4.05 [-2.99, +15.66]; +2.30 [-4.23, +14.83]; +0.96 [-4.62, +8.09]; +5.03 [-2.85, +14.83]
+-- v4 lifesnaps [all days]: 546 targets, 6 users; 741 distinct training windows of 26 users, 1 fit(s), scaling ['meanabs']; ridge gain over seeds [11, 12, 13, 14, 15]: +2.93, -1.69, +0.88, +2.59, -1.49; snaive alignment max |diff| 0.00e+00
+    gain vs isolated Chronos-2: ridge        +2.93 [-4.66, +10.19]
+    gain vs isolated Chronos-2: snaive       -34.17 [-49.10, -24.05]   minus ridge -37.10 [-47.82, -30.79]
+    gain vs isolated Chronos-2: xl4          +1.41 [-0.30, +3.65]   minus ridge -1.51 [-8.12, +5.98]
+    gain vs isolated Chronos-2: xl8          +2.26 [+0.13, +5.32]   minus ridge -0.66 [-6.82, +6.68]
+    gain vs isolated Chronos-2: d1_4         +1.60 [+0.19, +3.71]   minus ridge -1.33 [-7.40, +6.07]
+    gain vs isolated Chronos-2: d1p_4        +1.57 [+0.07, +3.66]   minus ridge -1.36 [-7.84, +6.26]
+    gain vs isolated Chronos-2: d4_P8_eps1   +2.17 [-0.03, +4.09]   minus ridge -0.75 [-7.36, +6.09]
+    gain vs isolated Chronos-2: d4_P8_eps4   +2.31 [+0.40, +4.29]   minus ridge -0.62 [-7.04, +6.22]
+    gain vs isolated Chronos-2: d4p_P8_eps1  +2.02 [+0.06, +4.00]   minus ridge -0.91 [-7.40, +6.01]
+    gain vs isolated Chronos-2: d4p_P8_eps4  +2.33 [+0.40, +4.25]   minus ridge -0.59 [-6.95, +6.08]
+    xl4 - ridge by seed: -1.51 [-8.12, +5.98]; +3.11 [-5.28, +14.59]; +0.53 [-5.99, +11.79]; -1.17 [-5.55, +2.75]; +2.90 [-5.33, +8.85]
+    xl8 - ridge by seed: -0.66 [-6.82, +6.68]; +3.96 [-3.43, +15.28]; +1.38 [-4.82, +12.97]; -0.33 [-3.93, +3.13]; +3.75 [-3.72, +9.28]
+
+== PH-C  point-forecast-only attacker (median decile) vs all nine deciles ==
+main eld c2base single k=2                 all deciles: AUC L1 0.717 [0.671, 0.762]  dAUC 0.209 [0.158, 0.258]  dR1 0.224 [0.180, 0.272]
+main lifesnaps c2base single k=2           all deciles: AUC L1 0.722 [0.682, 0.754]  dAUC 0.198 [0.157, 0.256]  dR1 0.230 [0.203, 0.268]
+main eld c2base single k=2                 median only: AUC L1 0.683 [0.638, 0.728]  dAUC 0.157 [0.108, 0.206]  dR1 0.141 [0.097, 0.189]
+main lifesnaps c2base single k=2           median only: AUC L1 0.706 [0.673, 0.748]  dAUC 0.168 [0.118, 0.235]  dR1 0.133 [0.106, 0.174]
+v3 eld c2base single k=2                   all deciles: AUC L1 0.724 [0.676, 0.767]  dAUC 0.209 [0.150, 0.263]  dR1 0.222 [0.164, 0.276]
+v3 eld c2small sybil k=256                 all deciles: AUC L1 0.597 [0.542, 0.650]  dAUC 0.097 [0.035, 0.161]  dR1 0.127 [0.085, 0.170]
+v3 lifesnaps c2base single k=2             all deciles: AUC L1 0.668 [0.621, 0.721]  dAUC 0.133 [0.092, 0.189]  dR1 0.214 [0.170, 0.248]
+v3 eld c2base single k=2                   median only: AUC L1 0.679 [0.636, 0.724]  dAUC 0.176 [0.112, 0.236]  dR1 0.156 [0.105, 0.205]
+v3 eld c2small sybil k=256                 median only: AUC L1 0.577 [0.526, 0.626]  dAUC 0.084 [0.029, 0.137]  dR1 0.068 [0.041, 0.096]
+v3 lifesnaps c2base single k=2             median only: AUC L1 0.661 [0.594, 0.730]  dAUC 0.136 [0.088, 0.205]  dR1 0.119 [0.097, 0.150]
+
+written posthoc_r3.json (5.0 min)

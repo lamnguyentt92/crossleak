@@ -20,6 +20,7 @@ Each campaign followed a plan frozen by SHA-256 before its first run; its result
 | Main study | `release/v0.2.0` | `prereg/MAIN_PREREG.md` | `configs/main.yaml` | `docs/MAIN_RESULTS.md` | `crossleak_v0.2.0_20261114-094533_all-main.zip` |
 | Confirmatory study | `release/v0.3.0` | `prereg/V3_PREREG.md` | `configs/v3.yaml` | `docs/V3_RESULTS.md` | `crossleak_v0.3.0_20261114-185432_all-v3.zip` |
 | Causal-defence study | `release/v0.4.0` | `prereg/V4_PREREG.md` | `configs/v4.yaml` | `docs/V4_RESULTS.md` | `crossleak_v0.4.0_20261114-223724_all-v4.zip` |
+| v0.5 study (requested in review) | `release/v0.5.0` | `prereg/V5_PREREG.md` | `configs/v5.yaml` | pending | `crossleak_v0.5.0_<datetime>_all-v5.zip` |
 
 The bundles (per-cell results, per-sample arrays, merged reports, frozen plans, logs) are at Zenodo,
 [doi:10.5281/zenodo.24224346](https://doi.org/10.5281/zenodo.24224346). Their sha256 values are in `deposit/bundles.json`. Each bundle's
@@ -82,6 +83,25 @@ Five machines: `CROSSLEAK_CONFIG=<config> bash scripts/run_campaign.sh <i> 5` on
 `bash scripts/cluster.sh run --config <config>` from one controller with root SSH access to the other machines. Wall-clock time on five 4-vCPU virtual machines: E0
 6.5 h, main study 9.3 h, confirmatory study 6.7 h, causal-defence study 1.1 h. Every run writes one zip to
 `~/crossleak-artifacts/`.
+
+## v0.5 study (this branch)
+
+Plan `prereg/V5_PREREG.md`, frozen by `prereg/V5_FREEZE.sha256` before any v0.5 data. From a controller with root SSH
+access to the five machines:
+```bash
+git clone -b release/v0.5.0 https://github.com/lamnguyentt92/crossleak.git ~/crossleak-v0.5.0 && cd ~/crossleak-v0.5.0
+bash scripts/cluster.sh run --config configs/v5_smoke.yaml        # smoke run on all machines
+nohup bash scripts/cluster.sh run --config configs/v5.yaml > ~/crossleak-v0.5.0-cluster.out 2>&1 < /dev/null &
+bash scripts/watch.sh --config configs/v5.yaml                    # dashboard; the run ends with one all-v5 zip
+crossleak main report --config configs/v5.yaml --from-zip ~/crossleak-artifacts/crossleak_v0.5.0_*_all-v5.zip --jobs 4 --out reports/v5
+```
+About 55 machine-hours: a main phase of about 10.7 h on five 4-vCPU machines, then the serving run (E5b, cost phase)
+of about 1.2 h on one idle machine. A `--until` deadline must leave room for the cost phase. Post hoc analyses on the
+deposited bundles (needs `crossleak data all`):
+```bash
+python docs/reanalysis/posthoc_r3.py --main bundles/crossleak_v0.2.0_*_all-main.zip \
+    --v3 bundles/crossleak_v0.3.0_*_all-v3.zip --v4 bundles/crossleak_v0.4.0_*_all-v4.zip
+```
 
 ## Layout
 

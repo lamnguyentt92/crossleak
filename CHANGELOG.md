@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.5.0
+v0.5 study, requested in the review of the manuscript (round r3): public-context ablation (E5a), end-to-end serving run
+(E5b), sybil attack over five independent realisations at k = 256 and k = 32 (E5c), half sybils at k = 256 and a
+batch-placement emulation (E5d); plan frozen by `prereg/V5_FREEZE.sha256` before any v0.5 data
+(`src/crossleak/experiments/v5.py`, `src/crossleak/analysis/v5_report.py`, `src/crossleak/baselines.py`,
+`configs/v5.yaml`). Post hoc analyses on the deposited bundles: `docs/reanalysis/posthoc_r3.py` (unique-user pooled D4
+comparison, ridge baseline, point-forecast-only attacker, exact Gaussian audit ceilings). The frozen main driver and
+analysis files are unchanged. This branch runs the v0.5 campaign; the paper release stays on `main`.
+
 ## v1.0.1
 Data deposit DOI; post hoc analyses after the final pre-submission review (docs/reanalysis/posthoc_r2.py, summary in docs/V4_RESULTS.md); paper asset generator updated (post hoc numbers, LifeSnaps seasonal-naive range over three studies). Experiment and analysis code unchanged.
 

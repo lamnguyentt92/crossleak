@@ -117,6 +117,8 @@ def _cmd_main(a) -> int:
             from crossleak.analysis.v3_report import build_report
         elif cfg.get("driver") == "v4":
             from crossleak.analysis.v4_report import build_report
+        elif cfg.get("driver") == "v5":
+            from crossleak.analysis.v5_report import build_report
         else:
             from crossleak.analysis.main_report import build_report
 
